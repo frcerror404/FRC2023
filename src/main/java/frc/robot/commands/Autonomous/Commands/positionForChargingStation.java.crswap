@@ -1,0 +1,36 @@
+package frc.robot.commands.Autonomous.Commands;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.Limelight;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
+public class positionForChargingStation extends CommandBase {
+  public final double durationS;
+  public double startTime;
+  public Limelight m_limelight;
+
+  public positionForChargingStation(double seconds, Limelight i_limelight) {
+    durationS = seconds;
+    m_limelight = i_limelight;
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    limelight.setPipline(1);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {}
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return Timer.getFPGATimestamp() - startTime >= durationS;
+  }
+}
