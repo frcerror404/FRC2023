@@ -7,10 +7,11 @@ import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 public class Gyro {
     // TalonSRX is on CAN Bus with device ID 0
-    public WPI_Pigeon2 gyro = new WPI_Pigeon2(3); // Pigeon uses the talon created above
+    public WPI_Pigeon2 gyro = new WPI_Pigeon2(Constants.gyro); // Pigeon uses the talon created above
     // The gain for a simple P loop
     // double kP = 0.05;
     private double yawOffset = gyro.getYaw();
@@ -29,8 +30,8 @@ public class Gyro {
         SmartDashboard.putNumber("Gyro Roll", getRoll());
         // Turn on side: Left (Value Decrease) - Right (Value Increase)
         SmartDashboard.putNumber("Gyro Pitch", getPitch());
-        SmartDashboard.putNumberArray("YPR", ypr);
-        SmartDashboard.putNumberArray("Quaternion", quaternion);
+        //SmartDashboard.putNumberArray("YPR", ypr);
+        //SmartDashboard.putNumberArray("Quaternion", quaternion);
     }
 
     public void updatePigeonInfo() {

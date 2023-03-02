@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Autonomous.Commands.ChargingStation;
 import frc.robot.subsystems.Drivebase;
 //import frc.robot.commands.Autonomous.Modes.NoOpAuton;
+import frc.robot.subsystems.old_Drivetrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -42,7 +43,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer(drivebase);
-    //CameraServer.startAutomaticCapture();
+    m_robotContainer.compressor.enableDigital();
 
     addPeriodic(() -> {
       m_robotContainer.gyro.updatePigeonInfo();
@@ -69,12 +70,13 @@ public class Robot extends TimedRobot {
     m_robotContainer.updatePigeon();
     m_robotContainer.getElevatorSensors();
     m_robotContainer.putDrivebaseSensors();
-    SmartDashboard.putNumber("Driven Meters", drivebase.ConvertEncoder(ChargingStation.RightLead.getSelectedSensorPosition()));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    //m_robotContainer.compressor.disable();
+  }
 
   @Override
   public void disabledPeriodic() {}

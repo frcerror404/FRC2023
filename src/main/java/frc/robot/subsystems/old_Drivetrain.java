@@ -26,26 +26,17 @@ public class old_Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drivetrain = new DifferentialDrive(LeftLead, RightLead);
   private final Gyro m_gyro = new Gyro();
-  private final DifferentialDriveOdometry m_Odometry;
 
   public old_Drivetrain() {
     setRightLeadDefaults();
     setLeftLeadDefaults();
     setrightFollowDefaults();
     setleftFollowDefaults();
-
-    m_Odometry = new DifferentialDriveOdometry(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor());
   }
 
   public void smartDashboardDrivetrainEncoders() {
     SmartDashboard.putNumber("Drivetrain RightLead", RightLead.getSelectedSensorPosition());
     SmartDashboard.putNumber("Drivetrain LeftLead", LeftLead.getSelectedSensorPosition());
-  }
-
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
-    RightLead.setVoltage(rightVolts);
-    LeftLead.setVoltage(leftVolts);
-    drivetrain.feed();
   }
 
   public double getLeftLeadSensor() {
@@ -69,21 +60,6 @@ public class old_Drivetrain extends SubsystemBase {
     RightLead.setSelectedSensorPosition(0.0);
   }
 
-  public Pose2d getPose() {
-    return m_Odometry.getPoseMeters();
-  }
-
-  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(LeftLead.getStatorCurrent(), RightLead.getStatorCurrent());
-  }
-
-  public void resetOdometry(Pose2d pose) {
-    RightLead.setSelectedSensorPosition(0.0);
-    LeftLead.setSelectedSensorPosition(0.0);
-
-    m_Odometry.resetPosition(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor(), pose);
-  }
-
   @Override
   public void periodic() {
     drivetrain.feedWatchdog();
@@ -100,7 +76,6 @@ public class old_Drivetrain extends SubsystemBase {
     // } catch(Exception e) {
     // System.out.println("Temperature Stale");
     // }
-    m_Odometry.update(m_gyro.get2dRotation(), getRightLeadSensor(), getLeftLeadSensor());
 
   }
 
@@ -114,7 +89,7 @@ public class old_Drivetrain extends SubsystemBase {
     if (Constants.isCurvatureDrive) {
       drivetrain.curvatureDrive(rawAxis, rawAxis2, button);
     } else {
-      drivetrain.tankDrive(rawAxis, rawAxis2);
+      drivetrain.tankDrive(-rawAxis, -rawAxis2);
       // System.out.println(String.format("Drivetrain Speed: %f %f", -rawAxis,
       // -rawAxis2));
     }

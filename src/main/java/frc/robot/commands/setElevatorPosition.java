@@ -7,45 +7,32 @@
 
 package frc.robot.commands;
 
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Drivebase;
-import frc.robot.subsystems.old_Drivetrain;
+import frc.robot.subsystems.Elevator;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class SetDrivetrainSpeedCommand extends CommandBase {
-  private final Drivebase m_Drivebase;
-  private final DoubleSupplier m_leftAxis;
-  private final DoubleSupplier m_rightAxis;
-  private final BooleanSupplier m_turbo;
-  private final BooleanSupplier m_slowMode;
+public class setElevatorPosition extends CommandBase {
+    private Double m_units;
+    private Elevator m_elevator;
 
-  public SetDrivetrainSpeedCommand (DoubleSupplier leftAxis, DoubleSupplier rightAxis, BooleanSupplier turbo,
-     BooleanSupplier slowMode, Drivebase drivebase) {
-    m_Drivebase = drivebase;
-    m_leftAxis = leftAxis;
-    m_rightAxis = rightAxis;
-    m_turbo = turbo;
-    m_slowMode = slowMode;
-    addRequirements(drivebase);
-  }
+  public setElevatorPosition(Elevator elevator, double units) {
+    m_units = units;
+    m_elevator = elevator;
+
+    addRequirements(elevator);
+  }      
 
   @Override
   public void execute() {
-
-    m_Drivebase.manualControl(m_rightAxis.getAsDouble(), m_leftAxis.getAsDouble(), m_turbo.getAsBoolean(),
-        m_slowMode.getAsBoolean());
+    m_elevator.setElevatorPosition(m_units);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   public boolean isFinished() {
-    return false; // Runs until interrupted
+    return true; // Runs until interrupted
   }
 }

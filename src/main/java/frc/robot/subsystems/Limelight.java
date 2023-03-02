@@ -48,11 +48,11 @@ public class Limelight extends SubsystemBase {
         pipeline = limelight.getEntry("pipeline");
         solvePNP = limelight.getEntry("camtran");
 
-        SmartDashboard.putNumber("LimeLightX", tx.getDouble(getArea()));
-        SmartDashboard.putNumber("LimeLightY", ty.getDouble(getArea()));
-        SmartDashboard.putNumber("LimelightArea", getArea());
-        SmartDashboard.putNumber("Pipeline", getPipeline());
-        SmartDashboard.putBoolean("ValitTarget", hasValidTarget());
+        //SmartDashboard.putNumber("LimeLightX", tx.getDouble(getArea()));
+        //SmartDashboard.putNumber("LimeLightY", ty.getDouble(getArea()));
+        //SmartDashboard.putNumber("LimelightArea", getArea());
+        //SmartDashboard.putNumber("Pipeline", getPipeline());
+        //SmartDashboard.putBoolean("ValitTarget", hasValidTarget());
     }
 
     /**

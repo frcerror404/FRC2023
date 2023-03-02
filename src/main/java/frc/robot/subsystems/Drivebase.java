@@ -1,18 +1,36 @@
 // Key subsystems such as the main subsystem file and constants.
 package frc.robot.subsystems;
 
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import Talon (Falcon 500 motor controllers have talons in them.) libraries.
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPMecanumControllerCommand;
+import com.pathplanner.lib.commands.PPRamseteCommand;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -32,13 +50,17 @@ public class Drivebase extends SubsystemBase {
   private final Gyro m_gyro = new Gyro();
   private final DifferentialDriveOdometry m_Odometry;
 
+  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(18.86));
+
   public Drivebase() {
+
+    leftMotors.setInverted(true);
+    rightMotors.setInverted(false);
+
     setRightLeadDefaults();
     setLeftLeadDefaults();
     setrightFollowDefaults();
     setleftFollowDefaults();
-
-    rightMotors.setInverted(true);
 
     m_Odometry = new DifferentialDriveOdometry(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor());
   }
@@ -119,8 +141,12 @@ public class Drivebase extends SubsystemBase {
     // } catch(Exception e) {
     // System.out.println("Temperature Stale");
     // }
-    m_Odometry.update(m_gyro.get2dRotation(), getRightLeadSensor(), getLeftLeadSensor());
+    //m_Odometry.update(m_gyro.get2dRotation(), getRightLeadSensor(), getLeftLeadSensor());
 
+    // System.out.print("Left Front: ");
+    // System.out.print(LeftLead.getMotorOutputPercent());
+    // System.out.print(", Left Rear: ");
+    // System.out.println(LeftFollow.getMotorOutputPercent());
   }
 
   @Override
@@ -128,14 +154,22 @@ public class Drivebase extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public void manualControl(double rawAxis, double rawAxis2, boolean button) {
+  public void manualControl(double rawAxis, double rawAxis2, boolean turbo, boolean slow) {
+
+    if(!turbo && !slow) {
+      rawAxis *= Constants.kDrivetrainSpeedMultiplier;
+      rawAxis2 *= Constants.kDrivetrainSpeedMultiplier;
+    }
+
+    if(slow) {
+      rawAxis *= Constants.kDrivetrainLowSpeedMultiplier;
+      rawAxis2 *= Constants.kDrivetrainLowSpeedMultiplier;
+    }
 
     if (Constants.isCurvatureDrive) {
-      drivetrain.curvatureDrive(rawAxis, rawAxis2, button);
+      drivetrain.curvatureDrive(rawAxis, rawAxis2, turbo);
     } else {
       drivetrain.tankDrive(rawAxis, rawAxis2);
-      // System.out.println(String.format("Drivetrain Speed: %f %f", -rawAxis,
-      // -rawAxis2));
     }
 
   }
@@ -144,33 +178,27 @@ public class Drivebase extends SubsystemBase {
   private void setLeftLeadDefaults() {
     LeftLead.configFactoryDefault();
     LeftLead.setNeutralMode(NeutralMode.Coast);
-    // LeftLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false,
-    // 50, 55, 1.0));
     LeftLead.configOpenloopRamp(.25);
   }
 
   private void setleftFollowDefaults() {
     LeftFollow.configFactoryDefault();
     LeftFollow.setNeutralMode(NeutralMode.Coast);
-    // LeftFollow.configStatorCurrentLimit(new
-    // StatorCurrentLimitConfiguration(false, 50, 55, 1.0));
     LeftFollow.configOpenloopRamp(.25);
+    LeftFollow.follow(LeftLead);
   }
 
   private void setRightLeadDefaults() {
     RightLead.configFactoryDefault();
     RightLead.setNeutralMode(NeutralMode.Coast);
-    // RightLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false,
-    // 50, 55, 1.0));
     RightLead.configOpenloopRamp(.25);
   }
 
   private void setrightFollowDefaults() {
     RightFollow.configFactoryDefault();
     RightFollow.setNeutralMode(NeutralMode.Coast);
-    // RightFollow.configStatorCurrentLimit(new
-    // StatorCurrentLimitConfiguration(false, 50, 55, 1.0));
     RightFollow.configOpenloopRamp(.25);
+    RightFollow.follow(RightLead);
 
   }
 
@@ -186,5 +214,9 @@ public class Drivebase extends SubsystemBase {
   public double ConvertEncoder(double value) {
     double rotationsPerMeter = (Constants.EncoderUnits / 1) * (Constants.GearboxUnits / 1) * Constants.feetToMeter;
     return value / rotationsPerMeter;
+  }
+
+  public static Drivebase drivebase() {
+    return null;
   }
 }

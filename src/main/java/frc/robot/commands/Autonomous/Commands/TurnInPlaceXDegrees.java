@@ -60,13 +60,13 @@ public class TurnInPlaceXDegrees extends CommandBase {
 
     double speed = turnController.calculate(_gyro.getYaw());
     speed = clamp(speed);
-    m_drivebase.manualControl(-speed, speed, true);
+    m_drivebase.manualControl(-speed, speed, true, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivebase.manualControl(0, 0, false);
+    m_drivebase.manualControl(0, 0, false, false);
   }
 
   // Returns true when the command should end.

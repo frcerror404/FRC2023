@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public final class Constants {
     // Drivetrain CAN ID's
-    public static int klDT1 = 14;
-    public static int klDT2 = 15;
-    public static int krDT1 = 45;
-    public static int krDT2 = 1;
+    public static int klDT1 = 3;
+    public static int klDT2 = 4;
+    public static int krDT1 = 1;
+    public static int krDT2 = 2;
     //DriveTrain Speed
-    public static double driveFastRPM = .84;
+    public static double driveFastRPM = 1.0;
     public static double driveDefault = .7;
     public static double driveSlowRPM = .4;
     public static double DTleftAxis = 0;
@@ -33,24 +33,29 @@ public final class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0.479);
+    public static final int kExtendedSolenoid = 1;
+    public static final int kRetractedSolenoid = 0;
+    public static final double ele_LowerLimit = 10000;
 
     // Claw
-    public static int clawR = 0;
-    public static int clawL = 0;
+    public static int clawR = 9;
+    public static int clawL = 10;
 
-    public static int SparkMotorRP = 0;
-    public static int SparkMotorLP = 0;
+    public static int kCompressor = 11;
+
+    public static int SparkMotorRP = 61;
+    public static int SparkMotorLP = 62;
     public static double gearRatio = 0;
     public static boolean motorInverted = true;
     public static double ClawIntakeRPM = -1;
     public static double ClawOuttakeRPM = 1;
     //Wrist
-    public static int wrist = 0;
+    public static int wrist = 8;
 
     public static double WristUPRPM = -1;
     public static double WristDOWNRPM = 1;
     //Elevator
-    public static int elevatorR = 11;
+    public static int elevatorR = 6;
     public static int elevatorL = 5;
     public static double currentElevatorLimit = 20;
     public static double currentElevatorThreshold = 25;
@@ -59,7 +64,7 @@ public final class Constants {
     public static double UPelevatorRPM = 1;
     public static double DOWNelevatorRPM = -1;
     //Gyro
-    public static int gyro = 0;
+    public static int gyro = 7;
 
     public static int kIndexer = 0;
 
@@ -70,4 +75,20 @@ public final class Constants {
 
     // true = arcade drive, false = tank drive
     public static boolean isCurvatureDrive = false;
+
+
+
+    /**
+     * Elevator Positions
+     */
+
+    public static double ele_FloorPosition = 0;
+    public static double ele_TopPosition = 490000;
+    public static double ele_MidPosition = 200000;
+
+    /**
+     * Wrist Soft Stops
+     */
+    public static int wrist_In = 0;
+    public static int wrist_Out = 28000;
 }

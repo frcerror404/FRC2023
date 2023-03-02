@@ -1,40 +1,78 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
-  private CANSparkMax rightMotor, leftMotor;
+  private WPI_TalonFX clawLead = new WPI_TalonFX(Constants.clawR);
+  private WPI_TalonFX clawFollow = new WPI_TalonFX(Constants.clawL);
+  private DoubleSolenoid extension = new DoubleSolenoid(Constants.kCompressor, PneumaticsModuleType.CTREPCM, Constants.kExtendedSolenoid, Constants.kRetractedSolenoid);
+
+  // if true, extend. If false, retract
+  private boolean extendState = false;
 
   public Claw(int rightPort, int leftPort, double gearRatio, Boolean invertedLeft) {
-
-    rightMotor = new CANSparkMax(leftPort, MotorType.kBrushless);
-    leftMotor = new CANSparkMax(rightPort, MotorType.kBrushless);
-
-    rightMotor.restoreFactoryDefaults();
-    leftMotor.restoreFactoryDefaults();
-
-    rightMotor.setIdleMode(IdleMode.kCoast);
-    leftMotor.setIdleMode(IdleMode.kCoast);
-
-    if (invertedLeft) {
-      leftMotor.setInverted(true);
-    } else {
-      rightMotor.setInverted(true);
-    }
-
-    leftMotor.follow(rightMotor);
+    setLeadDefaults();
+    setFollowDefaults();
   }
 
-  public CommandBase runClaw(double speed) {
-    return runOnce(
-        () -> {
-          rightMotor.set(speed);
-        });
+  @Override
+  public void periodic() {
+    Value value = extendState ? Value.kForward : Value.kReverse;
+    extension.set(value);
+
+    if(clawLead.getMotorOutputPercent() == 0) {
+      clawLead.setNeutralMode(NeutralMode.Brake);
+      clawFollow.setNeutralMode(NeutralMode.Brake);
+    } else {
+      clawLead.setNeutralMode(NeutralMode.Coast);
+      clawFollow.setNeutralMode(NeutralMode.Coast);
+    }
+  }
+
+  public void setLeadDefaults() {
+    clawLead.setNeutralMode(NeutralMode.Coast);
+    clawLead.configOpenloopRamp(0.25);
+    clawLead.setInverted(true);
+  }
+
+  public void setFollowDefaults() {
+    clawFollow.setNeutralMode(NeutralMode.Coast);
+    clawFollow.configOpenloopRamp(0.25);
+    clawFollow.follow(clawLead);
+    clawFollow.setInverted(InvertType.OpposeMaster);
+  }
+
+  public void setHorizElevatorExtend(boolean extend) {
+    extendState = extend;
+  }
+
+  public void toggleHorizElevatorExtend() {
+    extendState = !extendState;
+    System.out.println(extendState ? "Extended" : "Retracted");
+  }
+
+  public boolean getHorizElevatorExtend() {
+    return extendState;
+  }
+
+  public void setClawRPM(double RPM) {
+    double outputInSensorUnsits = RPM * Constants.Falcon500SensorUnitsConstant / 600;
+    clawLead.set(TalonFXControlMode.Velocity, outputInSensorUnsits);
+  }
+
+  public void setClawSpeed(double speed) {
+    clawLead.set(ControlMode.PercentOutput, speed);
   }
 
 }

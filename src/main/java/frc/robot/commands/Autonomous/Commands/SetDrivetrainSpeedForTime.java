@@ -42,13 +42,13 @@ public class SetDrivetrainSpeedForTime extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivebase.manualControl(leftSpeed, rightSpeed, false);
+    drivebase.manualControl(leftSpeed, rightSpeed, false, false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivebase.manualControl(0.0, 0.0, false);
+    drivebase.manualControl(0.0, 0.0, false, false);
   }
 
   // Returns true when the command should end.

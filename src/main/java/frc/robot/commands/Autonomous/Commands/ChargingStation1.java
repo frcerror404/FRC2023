@@ -55,9 +55,9 @@ public class ChargingStation1 extends CommandBase {
   public void execute() {
     m_tippedForward = gyro.getRoll() < degrees;
     if (!m_tippedForward) {
-      drivebase.manualControl(speedForward, speedForward, false);
+      drivebase.manualControl(speedForward, speedForward, false, false);
     } else {
-      drivebase.manualControl(speedBackward, speedBackward, false);
+      drivebase.manualControl(speedBackward, speedBackward, false, false);
     }
   }
 
@@ -65,7 +65,7 @@ public class ChargingStation1 extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (interrupted) {
-      drivebase.manualControl(0.0, 0.0, false);
+      drivebase.manualControl(0.0, 0.0, false, false);
     }
   }
 
