@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
 
-public class ChargingStation extends CommandBase {
+public class DriveStraightOnly extends CommandBase {
   public final Drivebase drivebase;
   public final Gyro gyro;
   public final double timeout = 60.0;
@@ -30,7 +30,7 @@ public class ChargingStation extends CommandBase {
   PIDController chargingStation;
 
   // Constructor
-  public ChargingStation(Drivebase argDrivebase, Gyro gyro2) {
+  public DriveStraightOnly(Drivebase argDrivebase, Gyro gyro2) {
     drivebase = argDrivebase;
     gyro = gyro2;
 
@@ -65,38 +65,15 @@ public class ChargingStation extends CommandBase {
 
     // Touch other side
     if(phase == 0) {
-      if (12 > drivebase.getRightDistance()) {
+      if (drivebase.getRightDistance() < 12) {
         drivebase.manualControl(-speedLeft, -speedRight, true, false);
       } else {
-        drivebase.manualControl(speedLeft, speedRight, false, false);
+        drivebase.manualControl(0, 0, false, false);
         phase = 1;
       }
+    } else {
+      drivebase.manualControl(0, 0, false, false);
     }
-
-
-    // Balance
-    if(phase == 1) {
-      if(flipCount > 10) {
-        drivebase.manualControl(0, 0, false, false);
-        return;
-      }
-  
-      if (correctDistance()) {
-        drivebase.manualControl(-speedLeft, -speedRight, true, false);
-      } else {
-        drivebase.manualControl(speedLeft, speedRight, true, false);
-      }
-  
-      if(forward != prevFlip) {
-        flipCount++;
-      }
-  
-      prevFlip = forward;
-      forward = !correctDistance();
-    }
-    
-
-
 
   }
 

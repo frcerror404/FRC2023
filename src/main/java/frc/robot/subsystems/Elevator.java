@@ -47,10 +47,10 @@ public class Elevator extends SubsystemBase {
 
     public void setLeadDefaults() {
         //elevatorLead.configFactoryDefault();
-        elevatorLead.setNeutralMode(NeutralMode.Brake);
+        elevatorLead.setNeutralMode(NeutralMode.Coast);
         elevatorLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.currentElevatorLimit,
                 Constants.currentElevatorThreshold, Constants.currentThresholdTime));
-        elevatorLead.configOpenloopRamp(.375);
+        //elevatorLead.configOpenloopRamp(.75);
         elevatorLead.setInverted(false);
 
         elevatorLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 5, 2, 0.5));
@@ -71,8 +71,9 @@ public class Elevator extends SubsystemBase {
         elevatorLead.configForwardSoftLimitThreshold(Constants.ele_TopPosition);
 
         elevatorFollow.follow(elevatorLead);
-        elevatorFollow.setNeutralMode(NeutralMode.Brake);
+        elevatorFollow.setNeutralMode(NeutralMode.Coast);
         elevatorFollow.setInverted(InvertType.OpposeMaster);
+        //elevatorFollow.configOpenloopRamp(.75);
     }
 
     //public void setFollowDefault() {

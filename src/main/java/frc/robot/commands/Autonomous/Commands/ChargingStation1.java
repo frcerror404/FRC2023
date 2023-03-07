@@ -12,8 +12,6 @@ import frc.robot.subsystems.Gyro;
 public class ChargingStation1 extends CommandBase {
   public final Drivebase drivebase;
   public final Gyro gyro;
-  public final WPI_TalonFX RightLead;
-  public final WPI_TalonFX LeftLead;
   public final double timeout = 60.0;
   private double startTime;
   private double speedForward;
@@ -29,11 +27,9 @@ public class ChargingStation1 extends CommandBase {
   PIDController chargingStation;
 
   // Constructor
-  public ChargingStation1(Drivebase argDrivebase, Gyro argGyro, WPI_TalonFX argRightLead, WPI_TalonFX argLeftLead) {
+  public ChargingStation1(Drivebase argDrivebase, Gyro argGyro) {
     drivebase = argDrivebase;
     gyro = argGyro;
-    RightLead = argRightLead;
-    LeftLead = argLeftLead;
 
     addRequirements(drivebase);
   }
@@ -44,10 +40,8 @@ public class ChargingStation1 extends CommandBase {
     startTime = Timer.getFPGATimestamp();
     firstTime = true;
     degrees = -4.0;
-    speedForward = -.375;
-    speedBackward = .375;
-    EncoderLeftOffset = LeftLead.getSelectedSensorPosition();
-    EncoderRightOffset = RightLead.getSelectedSensorPosition();
+    speedForward = -.45;
+    speedBackward = .45;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,9 +49,9 @@ public class ChargingStation1 extends CommandBase {
   public void execute() {
     m_tippedForward = gyro.getRoll() < degrees;
     if (!m_tippedForward) {
-      drivebase.manualControl(speedForward, speedForward, false, false);
+      drivebase.manualControl(speedForward, speedForward, true, false);
     } else {
-      drivebase.manualControl(speedBackward, speedBackward, false, false);
+      drivebase.manualControl(speedBackward, speedBackward, true, false);
     }
   }
 

@@ -30,8 +30,12 @@ import frc.robot.commands.ToggleElevatorExtension;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Piston;
 import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.old_Drivetrain;
 import frc.robot.commands.setElevatorPosition;
+import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
+import frc.robot.commands.Autonomous.Commands.BackwardsChargingStation;
+import frc.robot.commands.Autonomous.Commands.ChargingStation;
+import frc.robot.commands.Autonomous.Commands.ChargingStation1;
+import frc.robot.commands.Autonomous.Commands.ThrowConeAndBalance;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -60,27 +64,29 @@ public class RobotContainer {
   private final XboxController joy1 = new XboxController(1);
   
 
-  @SuppressWarnings("unused")
-  private WPI_TalonFX RightLead;
-  @SuppressWarnings("unused")
-  private WPI_TalonFX LeftLead;
+  // @SuppressWarnings("unused")
+  // private WPI_TalonFX RightLead;
+  // @SuppressWarnings("unused")
+  // private WPI_TalonFX LeftLead;
 
   private SendableChooser<Command> m_chooser = new SendableChooser<Command>();
 
   public RobotContainer(Drivebase m_drivebase) {
     drivebase = m_drivebase;
-    RightLead = drivebase.getRightLead();
-    LeftLead = drivebase.getLeftLead();
+    // RightLead = drivebase.getRightLead();
+    // LeftLead = drivebase.getLeftLead();
     // Configure the button bindings
     configureButtonBindings();
-
     
 
-    // m_chooser.addOption("Elevator 0", new setElevatorPosition(0.0, elevator));
-    // m_chooser.addOption("Elevator Middle", new setElevatorPosition(200000.0,
-    // elevator));
-    // m_chooser.addOption("Elevator Top", new setElevatorPosition(490000.0,
-    // elevator));
+    m_chooser.addOption("Regular Balance Only", new ChargingStation(m_drivebase, gyro));
+    m_chooser.setDefaultOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, m_drivebase, gyro));
+    m_chooser.addOption("Drive Forward Only", new DriveStraightOnly(m_drivebase, gyro));
+    m_chooser.addOption("Backwards Balance Only", new BackwardsChargingStation(m_drivebase, gyro));
+    //m_chooser.addOption("Elevator Middle", new setElevatorPosition(200000.0,
+    //elevator));
+    //m_chooser.addOption("Elevator Top", new setElevatorPosition(490000.0,
+    //elevator));
 
     SmartDashboard.putData(m_chooser);
   }
@@ -106,6 +112,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    System.out.println(m_chooser.getSelected().getName());
     return m_chooser.getSelected();
   }
 
@@ -158,7 +165,7 @@ public class RobotContainer {
     // .whenReleased(new SetRelease(martianClimbers, ReleaseType.None));
 
     // Manuel Claw
-    P1_rightBumper.whileTrue(new setClawSpeed(claw, 0.5)).whileFalse(new setClawSpeed(claw, 0.0));
+    P1_rightBumper.whileTrue(new setClawSpeed(claw, 0.5)).whileFalse(new setClawSpeed(claw, 0.15));
     P1_leftBumper.whileTrue(new setClawSpeed(claw, -0.15)).whileFalse(new setClawSpeed(claw, 0.0));
 
     // Manuel Elevator
@@ -174,8 +181,8 @@ public class RobotContainer {
 
     P1_startButton.whileTrue(new ToggleElevatorExtension(claw));
 
-    P1_BButton.whileTrue(new SetWristSpeed(wrist, .25)).whileFalse(new SetWristSpeed(wrist, 0));
-    P1_XButton.whileTrue(new SetWristSpeed(wrist, -.35)).whileFalse(new SetWristSpeed(wrist, 0));
+    P1_BButton.whileTrue(new SetWristSpeed(wrist, .40)).whileFalse(new SetWristSpeed(wrist, 0));
+    P1_XButton.whileTrue(new SetWristSpeed(wrist, -.25)).whileFalse(new SetWristSpeed(wrist, 0));
 
     if (Constants.isCurvatureDrive) {
       drivebase.setDefaultCommand(

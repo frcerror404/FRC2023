@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
 
-public class ChargingStation extends CommandBase {
+public class BackwardsChargingStation extends CommandBase {
   public final Drivebase drivebase;
   public final Gyro gyro;
   public final double timeout = 60.0;
@@ -30,7 +30,7 @@ public class ChargingStation extends CommandBase {
   PIDController chargingStation;
 
   // Constructor
-  public ChargingStation(Drivebase argDrivebase, Gyro gyro2) {
+  public BackwardsChargingStation(Drivebase argDrivebase, Gyro gyro2) {
     drivebase = argDrivebase;
     gyro = gyro2;
 
@@ -56,19 +56,14 @@ public class ChargingStation extends CommandBase {
     m_tippedBackward = gyro.getRoll() > backward_degrees;
     leftOffset = gyro.getYaw() > 0;
     rightOffset = gyro.getYaw() < 0;
-    //if (leftOffset) {
-    //  speedLeft += 0.25;
-    //} else if (rightOffset) {
-    //  speedRight += 0.25;
-    //}
-
 
     // Touch other side
     if(phase == 0) {
-      if (12 > drivebase.getRightDistance()) {
-        drivebase.manualControl(-speedLeft, -speedRight, true, false);
+      System.out.print("Phase 0 " + drivebase.getRightDistance());
+      if (drivebase.getRightDistance() > -12) {
+        drivebase.manualControl(speedLeft, speedRight, true, false);
       } else {
-        drivebase.manualControl(speedLeft, speedRight, false, false);
+        drivebase.manualControl(-.5, -.5, false, false);
         phase = 1;
       }
     }
@@ -82,9 +77,9 @@ public class ChargingStation extends CommandBase {
       }
   
       if (correctDistance()) {
-        drivebase.manualControl(-speedLeft, -speedRight, true, false);
-      } else {
         drivebase.manualControl(speedLeft, speedRight, true, false);
+      } else {
+        drivebase.manualControl(-speedLeft, -speedRight, true, false);
       }
   
       if(forward != prevFlip) {
@@ -101,7 +96,7 @@ public class ChargingStation extends CommandBase {
   }
 
   private boolean correctDistance() {
-    return 5.75 > drivebase.getRightDistance();
+    return drivebase.getRightDistance() > -5.75;
   }
 
   // Called once the command ends or is interrupted.
