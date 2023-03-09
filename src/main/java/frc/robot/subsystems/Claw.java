@@ -63,7 +63,6 @@ public class Claw extends SubsystemBase {
 
   public void toggleHorizElevatorExtend() {
     extendState = !extendState;
-    System.out.println(extendState ? "Extended" : "Retracted");
   }
 
   public boolean getHorizElevatorExtend() {

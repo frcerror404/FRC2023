@@ -5,7 +5,14 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPRamseteCommand;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -14,6 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -79,10 +88,10 @@ public class RobotContainer {
     configureButtonBindings();
     
 
-    m_chooser.addOption("Regular Balance Only", new ChargingStation(m_drivebase, gyro));
-    m_chooser.setDefaultOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, m_drivebase, gyro));
-    m_chooser.addOption("Drive Forward Only", new DriveStraightOnly(m_drivebase, gyro));
-    m_chooser.addOption("Backwards Balance Only", new BackwardsChargingStation(m_drivebase, gyro));
+    m_chooser.addOption("Regular Balance Only", new ChargingStation(drivebase, gyro));
+    m_chooser.setDefaultOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, drivebase, gyro));
+    m_chooser.addOption("Drive Forward Only", new DriveStraightOnly(drivebase, gyro));
+    m_chooser.addOption("Backwards Balance Only", new BackwardsChargingStation(drivebase, gyro));
     //m_chooser.addOption("Elevator Middle", new setElevatorPosition(200000.0,
     //elevator));
     //m_chooser.addOption("Elevator Top", new setElevatorPosition(490000.0,
@@ -112,8 +121,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    System.out.println(m_chooser.getSelected().getName());
-    return m_chooser.getSelected();
+    //return m_chooser.getSelected();
+    return drivebase.getPathCommand().andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
   }
 
   /**
@@ -192,7 +201,6 @@ public class RobotContainer {
       () -> joy0.getLeftBumper(),
       () -> joy0.getRightBumper(),
       drivebase));
-      System.out.println(joy0.getRightY());
 
       } else {
       drivebase.setDefaultCommand(
@@ -203,9 +211,5 @@ public class RobotContainer {
       () -> joy0.getRightBumper(),
       drivebase));
       }
-
-
-      System.out.print("Container Speed: ");
-      System.out.println(joy0.getRightY());
     }
   }

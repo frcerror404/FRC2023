@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import Talon (Falcon 500 motor controllers have talons in them.) libraries.
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPMecanumControllerCommand;
@@ -52,7 +53,7 @@ public class Drivebase extends SubsystemBase {
   private final Gyro m_gyro = new Gyro();
   private final DifferentialDriveOdometry m_Odometry;
 
-  DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(18.86));
+  public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(18.86));
 
   public Drivebase() {
 
@@ -64,6 +65,7 @@ public class Drivebase extends SubsystemBase {
     setrightFollowDefaults();
     setleftFollowDefaults();
 
+    resetEncoders();
     m_Odometry = new DifferentialDriveOdometry(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor());
   }
 
@@ -73,9 +75,13 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    RightLead.setVoltage(rightVolts);
-    LeftLead.setVoltage(leftVolts);
+    leftMotors.setVoltage(rightVolts);
+    rightMotors.setVoltage(leftVolts);
     drivetrain.feed();
+  }
+
+  public double getHeading() {
+    return m_gyro.get2dRotation().getDegrees();
   }
 
   public void zeroEncoders() {
@@ -112,8 +118,15 @@ public class Drivebase extends SubsystemBase {
     RightLead.setSelectedSensorPosition(0.0);
   }
 
+  public void resetEncoders() {
+    LeftLead.setSelectedSensorPosition(0.0);
+    LeftFollow.setSelectedSensorPosition(0.0);
+    RightLead.setSelectedSensorPosition(0.0);
+    RightFollow.setSelectedSensorPosition(0.0);
+  }
+
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(LeftLead.getStatorCurrent(), RightLead.getStatorCurrent());
+    return new DifferentialDriveWheelSpeeds(LeftLead.getSelectedSensorVelocity(), RightLead.getSelectedSensorVelocity());
   }
 
   public Pose2d getPose() {
@@ -121,10 +134,35 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    RightLead.setSelectedSensorPosition(0.0);
-    LeftLead.setSelectedSensorPosition(0.0);
+    resetEncoders();
 
     m_Odometry.resetPosition(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor(), pose);
+  }
+
+  public Command getPathCommand() {
+    PathPlannerTrajectory trajectorPath = PathPlanner.loadPath("Forward3", new PathConstraints((4/3), (3/3)));
+
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> {
+        this.resetEncoders();
+      }),
+      new InstantCommand(() -> {
+        this.resetOdometry(trajectorPath.getInitialPose());
+      }),
+      new PPRamseteCommand(
+        trajectorPath,
+        this::getPose,
+        new RamseteController(),
+        new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltsSecondsPerMeter, Constants.kaVoltSecondsSquarePErMeter),
+        kinematics,
+        this::getWheelSpeeds,
+        new PIDController(0, 0, 0),
+        new PIDController(0, 0, 0),
+        this::tankDriveVolts,
+        true,
+        this
+      )
+    );
   }
 
   @Override
@@ -132,6 +170,7 @@ public class Drivebase extends SubsystemBase {
     drivetrain.feedWatchdog();
     SmartDashboard.putNumber("Right Encoder", getRightDistance());
 
+    m_Odometry.update(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor());
     // try {
     // SmartDashboard.putNumber("Drivetrain Temp (FL):",
     // LeftMaster.getTemperature());
