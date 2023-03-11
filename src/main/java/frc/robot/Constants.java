@@ -21,7 +21,7 @@ public final class Constants {
     public static double DTrightAxis = 0;
     //Converter
     public static double EncoderUnits = 2048;
-    public static double GearboxUnits = 12.75;
+    public static double GearboxUnits = 10.71;
     public static double feetToMeter = 0.479;
     //Paths
     public static final double ksVolts = 0.66186;

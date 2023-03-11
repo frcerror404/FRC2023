@@ -1,0 +1,9 @@
+{
+  "lengthUnit": "Meter",
+  "exportUnit": "Always Meters",
+  "maxVelocity": 2.47,
+  "maxAcceleration": 1.85,
+  "trackWidth": 2.0,
+  "gameName": "Charged Up",
+  "outputDir": "../src/main/deploy/pathweaver"
+}

@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.PPRamseteCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -30,6 +31,7 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Gyro;
+import frc.robot.subsystems.Led;
 import frc.robot.commands.SetDrivetrainSpeedCommand;
 import frc.robot.commands.runClaw;
 import frc.robot.commands.setClawSpeed;
@@ -68,6 +70,7 @@ public class RobotContainer {
       Constants.motorInverted);
   public final Piston m_piston = new Piston();
   public final Compressor compressor = new Compressor(Constants.kCompressor, PneumaticsModuleType.CTREPCM);
+  private final Led m_led = new Led();
 
   private final XboxController joy0 = new XboxController(0);
   private final XboxController joy1 = new XboxController(1);
@@ -86,7 +89,6 @@ public class RobotContainer {
     // LeftLead = drivebase.getLeftLead();
     // Configure the button bindings
     configureButtonBindings();
-    
 
     m_chooser.addOption("Regular Balance Only", new ChargingStation(drivebase, gyro));
     m_chooser.setDefaultOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, drivebase, gyro));
@@ -121,8 +123,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    //return m_chooser.getSelected();
-    return drivebase.getPathCommand().andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
+    //return m_chooser.getSelected();\
+    return drivebase.getPathCommand("Forward3").andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
   }
 
   /**

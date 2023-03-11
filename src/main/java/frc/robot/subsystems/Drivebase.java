@@ -1,6 +1,8 @@
 // Key subsystems such as the main subsystem file and constants.
 package frc.robot.subsystems;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
@@ -26,13 +28,18 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -52,6 +59,7 @@ public class Drivebase extends SubsystemBase {
   private final DifferentialDrive drivetrain = new DifferentialDrive(leftMotors, rightMotors);
   private final Gyro m_gyro = new Gyro();
   private final DifferentialDriveOdometry m_Odometry;
+  private Trajectory trajectorPath;
 
   public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(18.86));
 
@@ -60,23 +68,27 @@ public class Drivebase extends SubsystemBase {
     leftMotors.setInverted(true);
     rightMotors.setInverted(false);
 
+    trajectorPath = null;
+
     setRightLeadDefaults();
     setLeftLeadDefaults();
     setrightFollowDefaults();
     setleftFollowDefaults();
 
     resetEncoders();
-    m_Odometry = new DifferentialDriveOdometry(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor());
+    m_Odometry = new DifferentialDriveOdometry(m_gyro.get2dRotation(), 0.0, 0.0);
   }
 
   public void smartDashboardDrivetrainEncoders() {
-    SmartDashboard.putNumber("Drivetrain RightLead", RightLead.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Drivetrain LeftLead", LeftLead.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Drivetrain RightLead", convertEncoder(RightLead.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Drivetrain LeftLead", convertEncoder(LeftLead.getSelectedSensorPosition()));
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    leftMotors.setVoltage(rightVolts);
-    rightMotors.setVoltage(leftVolts);
+    SmartDashboard.putNumber("Left Volts", -leftVolts);
+    SmartDashboard.putNumber("Right Volts", -rightVolts);
+    leftMotors.setVoltage(-leftVolts);
+    rightMotors.setVoltage(-rightVolts);
     drivetrain.feed();
   }
 
@@ -90,11 +102,11 @@ public class Drivebase extends SubsystemBase {
   }
 
   public double getLeftDistance() {
-    return ConvertEncoder(getLeftLeadSensor());
+    return convertEncoder(getLeftLeadSensor());
   }
 
   public double getRightDistance() {
-    return ConvertEncoder(getRightLeadSensor());
+    return convertEncoder(getRightLeadSensor());
   }
 
   public double getLeftLeadSensor() {
@@ -126,7 +138,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(LeftLead.getSelectedSensorVelocity(), RightLead.getSelectedSensorVelocity());
+    return new DifferentialDriveWheelSpeeds(convertEncoder(LeftLead.getSelectedSensorVelocity()), convertEncoder(RightLead.getSelectedSensorVelocity()));
   }
 
   public Pose2d getPose() {
@@ -135,21 +147,22 @@ public class Drivebase extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-
-    m_Odometry.resetPosition(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor(), pose);
+    m_Odometry.resetPosition(m_gyro.get2dRotation(), 0.0, 0.0, pose);
   }
 
-  public Command getPathCommand() {
-    PathPlannerTrajectory trajectorPath = PathPlanner.loadPath("Forward3", new PathConstraints((4/3), (3/3)));
+  public SequentialCommandGroup getPathCommand(String pathname) {
+    Path jsonTrajectorPath = Filesystem.getDeployDirectory().toPath().resolve("pathweaver/output/first.wpilib.json");
+    try {
+      trajectorPath = TrajectoryUtil.fromPathweaverJson(jsonTrajectorPath);
+    } catch (IOException exception) {
+      DriverStation.reportError("Unable to use file" + jsonTrajectorPath, exception.getStackTrace());
+      System.out.println("Unable to use file");
+    }
+
+    this.resetOdometry(trajectorPath.getInitialPose());
 
     return new SequentialCommandGroup(
-      new InstantCommand(() -> {
-        this.resetEncoders();
-      }),
-      new InstantCommand(() -> {
-        this.resetOdometry(trajectorPath.getInitialPose());
-      }),
-      new PPRamseteCommand(
+      new RamseteCommand(
         trajectorPath,
         this::getPose,
         new RamseteController(),
@@ -159,7 +172,6 @@ public class Drivebase extends SubsystemBase {
         new PIDController(0, 0, 0),
         new PIDController(0, 0, 0),
         this::tankDriveVolts,
-        true,
         this
       )
     );
@@ -168,9 +180,8 @@ public class Drivebase extends SubsystemBase {
   @Override
   public void periodic() {
     drivetrain.feedWatchdog();
-    SmartDashboard.putNumber("Right Encoder", getRightDistance());
 
-    m_Odometry.update(m_gyro.get2dRotation(), getLeftLeadSensor(), getRightLeadSensor());
+    m_Odometry.update(m_gyro.get2dRotation(), convertEncoder(LeftLead.getSelectedSensorPosition()), convertEncoder(LeftLead.getSelectedSensorPosition()));
     // try {
     // SmartDashboard.putNumber("Drivetrain Temp (FL):",
     // LeftMaster.getTemperature());
@@ -260,9 +271,9 @@ public class Drivebase extends SubsystemBase {
     LeftFollow.setNeutralMode(mode);
   }
 
-  public double ConvertEncoder(double value) {
+  public double convertEncoder(double value) {
     double rotationsPerMeter = (Constants.EncoderUnits / 1) * (Constants.GearboxUnits / 1) * Constants.feetToMeter;
-    return value / rotationsPerMeter;
+    return (value / rotationsPerMeter);
   }
 
   public static Drivebase drivebase() {

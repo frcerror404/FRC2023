@@ -8,7 +8,7 @@
 package frc.robot.commands.Autonomous.Modes;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Autonomous.Commands.SetDrivetrainSpeedForTime;
+import frc.robot.commands.SetDrivetrainSpeedForTime;
 import frc.robot.subsystems.Drivebase;
 // import frc.robot.Limelight;
 

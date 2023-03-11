@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
 import frc.robot.subsystems.Drivebase;
 //import frc.robot.commands.Autonomous.Modes.NoOpAuton;
+import frc.robot.subsystems.Led;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
