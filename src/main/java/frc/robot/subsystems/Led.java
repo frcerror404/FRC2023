@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.lang.reflect.Array;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,6 +11,8 @@ public class Led extends SubsystemBase {
     private final AddressableLED m_led = new AddressableLED(9);
     private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(7);
     private int m_rainbowFirstPixelHue = 0;
+    private int[] yellowRGB = {245, 252, 63};
+    private int[] purpleRGB = {255, 0, 255};
 
     public Led() {
         m_led.setLength(m_ledBuffer.getLength());
@@ -38,7 +42,7 @@ public class Led extends SubsystemBase {
 
     public void yellowPurpleLed() {
         for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            m_ledBuffer.setRGB(i, 255, 0, 255);
+            m_ledBuffer.setRGB(i, yellowRGB[0], yellowRGB[1], yellowRGB[2]);
         }
     }
 
