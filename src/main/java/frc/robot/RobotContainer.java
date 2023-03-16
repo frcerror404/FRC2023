@@ -31,17 +31,21 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Gyro;
+import frc.robot.subsystems.LEDManager;
 import frc.robot.subsystems.Led;
 import frc.robot.commands.SetDrivetrainSpeedCommand;
 import frc.robot.commands.runClaw;
 import frc.robot.commands.setClawSpeed;
+import frc.robot.commands.setDefaultLed;
 import frc.robot.commands.SetElevatorSpeed_DefaultCommand;
 import frc.robot.commands.SetWristSpeed;
 import frc.robot.commands.ToggleElevatorExtension;
+import frc.robot.commands.purpleLed;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Piston;
 import frc.robot.subsystems.Wrist;
 import frc.robot.commands.setElevatorPosition;
+import frc.robot.commands.yellowLed;
 import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
 import frc.robot.commands.Autonomous.Commands.BackwardsChargingStation;
 import frc.robot.commands.Autonomous.Commands.ChargingStation;
@@ -71,6 +75,7 @@ public class RobotContainer {
   public final Piston m_piston = new Piston();
   public final Compressor compressor = new Compressor(Constants.kCompressor, PneumaticsModuleType.CTREPCM);
   private final Led m_led = new Led();
+  private final LEDManager m_LedManager = new LEDManager(m_led);
 
   private final XboxController joy0 = new XboxController(0);
   private final XboxController joy1 = new XboxController(1);
@@ -125,6 +130,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //return m_chooser.getSelected();\
     return drivebase.getPathCommand("Forward3").andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
+  }
+
+  public void runLedManager() {
+    this.m_LedManager.ledSwitch();
   }
 
   /**
@@ -195,6 +204,8 @@ public class RobotContainer {
     P1_BButton.whileTrue(new SetWristSpeed(wrist, .40)).whileFalse(new SetWristSpeed(wrist, 0));
     P1_XButton.whileTrue(new SetWristSpeed(wrist, -.25)).whileFalse(new SetWristSpeed(wrist, 0));
 
+    P1_AButton.onTrue(new purpleLed(m_LedManager));
+    P1_YButton.onTrue(new yellowLed(m_LedManager));
     if (Constants.isCurvatureDrive) {
       drivebase.setDefaultCommand(
       new SetDrivetrainSpeedCommand(

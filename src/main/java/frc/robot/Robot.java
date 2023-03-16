@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.updatePigeon();
     m_robotContainer.getElevatorSensors();
     m_robotContainer.putDrivebaseSensors();
+    m_robotContainer.runLedManager();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
