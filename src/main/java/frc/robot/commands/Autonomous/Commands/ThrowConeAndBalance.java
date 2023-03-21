@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Autonomous.Commands;
 
-
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.setClawSpeed;
@@ -22,14 +21,12 @@ public class ThrowConeAndBalance extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SequentialCommandGroup(
-        new SetWristSpeedForTime(wrist, .5, 0.35),
-        new setClawSpeed(claw, -1.0),
-        new DelayCommand(.3),
-        new setClawSpeed(claw, 0.0),
-        new SetWristSpeedForTime(wrist, -.75, 3)
-      ),
-      new BackwardsChargingStation(drivebase, gyro)
-    );
+        new SequentialCommandGroup(
+            new SetWristSpeedForTime(wrist, .5, 0.35),
+            new setClawSpeed(claw, -1.0),
+            new DelayCommand(.3),
+            new setClawSpeed(claw, 0.0),
+            new SetWristSpeedForTime(wrist, -.75, 3)),
+        new BackwardsChargingStation(drivebase, gyro));
   }
 }

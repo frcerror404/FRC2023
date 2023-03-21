@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-
-
 public class Led extends SubsystemBase {
     private final AddressableLED m_led = new AddressableLED(9);
     private int m_rainbowFirstPixelHue = 0;
@@ -23,7 +21,6 @@ public class Led extends SubsystemBase {
     private boolean decorationColor = false;
     private int timingStep = 0;
 
-    
     public enum WantedColorState {
         OFF,
         DECORATION,
@@ -42,9 +39,8 @@ public class Led extends SubsystemBase {
         }
     }
 
-    
     public void LedPeriodic() {
-        switch(m_ColorState) {
+        switch (m_ColorState) {
             case OFF: {
                 staticColor(Color.kBlack);
                 break;
@@ -69,10 +65,10 @@ public class Led extends SubsystemBase {
     }
 
     public void setLEDColor(WantedColorState state) {
-        if(m_ColorState != state) {
+        if (m_ColorState != state) {
             m_ColorState = state;
             timingStep = 0;
-            
+
         }
     }
 
@@ -90,13 +86,13 @@ public class Led extends SubsystemBase {
     }
 
     public void yellowPurpleLed() {
-        if(Timer.getFPGATimestamp() - tempTime > 2) {
+        if (Timer.getFPGATimestamp() - tempTime > 2) {
             decorationColor = !decorationColor;
             tempTime = Timer.getFPGATimestamp();
             timingStep = 0;
         }
 
-        if(decorationColor) {
+        if (decorationColor) {
             staticColor(Color.kPurple);
         } else {
             staticColor(Color.kYellow);
@@ -104,7 +100,7 @@ public class Led extends SubsystemBase {
     }
 
     public void staticColor(Color color) {
-        if(timingStep < m_ledBuffer.getLength()) {
+        if (timingStep < m_ledBuffer.getLength()) {
             m_ledBuffer.setLED(timingStep, color);
         } else {
             this.timingStep = -1;
