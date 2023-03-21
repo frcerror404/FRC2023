@@ -1,10 +1,7 @@
 package frc.robot.commands.Autonomous.Commands;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
@@ -17,13 +14,7 @@ public class ChargingStation1 extends CommandBase {
   private double speedForward;
   private double speedBackward;
   private double degrees;
-  private double EncoderLeftOffset;
-  private double EncoderRightOffset;
-  private double currentLeftEncoderValue;
-  private double currentRightEncoderValue;
   private boolean m_tippedForward = false;
-  private boolean m_turned = false;
-  private boolean firstTime;
   PIDController chargingStation;
 
   // Constructor
@@ -38,7 +29,6 @@ public class ChargingStation1 extends CommandBase {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
-    firstTime = true;
     degrees = -4.0;
     speedForward = -.45;
     speedBackward = .45;

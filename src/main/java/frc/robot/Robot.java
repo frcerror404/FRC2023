@@ -4,25 +4,10 @@
 
 package frc.robot;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
 import frc.robot.subsystems.Drivebase;
-//import frc.robot.commands.Autonomous.Modes.NoOpAuton;
-import frc.robot.subsystems.Led;
 import frc.robot.subsystems.Led.WantedColorState;
 
 /**
@@ -37,7 +22,7 @@ public class Robot extends TimedRobot {
   public final Drivebase drivebase = new Drivebase();
 
   private RobotContainer m_robotContainer;
-  private SendableChooser<Command> chooser = new SendableChooser<>();
+  //private SendableChooser<Command> chooser = new SendableChooser<>();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

@@ -1,10 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.ctre.phoenix.sensors.WPI_PigeonIMU;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
@@ -76,9 +72,9 @@ public class Gyro {
         return quaternion;
     }
 
-    // public double getTurnRate() {
-    // return turnRate;
-    // }
+    public double getTurnRate() {
+        return turnRate;
+    }
 
     // public void zeroHeading() {
     // gyro.();

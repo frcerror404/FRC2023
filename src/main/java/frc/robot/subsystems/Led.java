@@ -1,14 +1,9 @@
 package frc.robot.subsystems;
 
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.TimeUnit;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -117,13 +112,6 @@ public class Led extends SubsystemBase {
 
         timingStep++;
 
-        m_led.setData(m_ledBuffer);
-    }
-
-    public void turnOff() {
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-            m_ledBuffer.setRGBArray(i, offRGB);
-        }
         m_led.setData(m_ledBuffer);
     }
 

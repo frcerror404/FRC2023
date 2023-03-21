@@ -4,17 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.PPRamseteCommand;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -24,19 +13,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.Led;
 import frc.robot.commands.SetDrivetrainSpeedCommand;
-import frc.robot.commands.runClaw;
 import frc.robot.commands.setClawSpeed;
-import frc.robot.commands.setDefaultLed;
 import frc.robot.commands.SetElevatorSpeed_DefaultCommand;
 import frc.robot.commands.SetWristSpeed;
 import frc.robot.commands.ToggleElevatorExtension;
@@ -45,11 +29,9 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Piston;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Led.WantedColorState;
-import frc.robot.commands.setElevatorPosition;
 import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
 import frc.robot.commands.Autonomous.Commands.BackwardsChargingStation;
 import frc.robot.commands.Autonomous.Commands.ChargingStation;
-import frc.robot.commands.Autonomous.Commands.ChargingStation1;
 import frc.robot.commands.Autonomous.Commands.ThrowConeAndBalance;
 
 /**
