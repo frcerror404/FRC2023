@@ -37,6 +37,9 @@ public final class Constants {
     public static final int kRetractedSolenoid = 0;
     public static final double ele_LowerLimit = 10000;
 
+    //Led
+    public static int setColorCondition = 0;
+
     // Claw
     public static int clawR = 9;
     public static int clawL = 10;

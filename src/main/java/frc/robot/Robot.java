@@ -23,6 +23,7 @@ import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
 import frc.robot.subsystems.Drivebase;
 //import frc.robot.commands.Autonomous.Modes.NoOpAuton;
 import frc.robot.subsystems.Led;
+import frc.robot.subsystems.Led.WantedColorState;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -49,6 +50,10 @@ public class Robot extends TimedRobot {
     addPeriodic(() -> {
       m_robotContainer.gyro.updatePigeonInfo();
     }, .02, 0.005);
+
+    addPeriodic(() -> {
+      m_robotContainer.runLedManager();
+    }, .02, .005);
   }
     
 
@@ -71,7 +76,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.updatePigeon();
     m_robotContainer.getElevatorSensors();
     m_robotContainer.putDrivebaseSensors();
-    m_robotContainer.runLedManager();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -82,7 +86,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_robotContainer.m_led.setLEDColor(WantedColorState.DECORATION);
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
