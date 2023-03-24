@@ -32,9 +32,13 @@ public final class Constants {
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0.479);
-    public static final int kExtendedSolenoid = 1;
-    public static final int kRetractedSolenoid = 0;
-    public static final double ele_LowerLimit = 10000;
+    public static final int kExtendedSolenoid = 0;
+    public static final int kRetractedSolenoid = 1;
+   
+
+    //Limelight
+    public static double limelightTx;
+    public static int limelightPipeline;
 
     //Led
     public static int setColorCondition = 0;
@@ -85,12 +89,15 @@ public final class Constants {
      */
 
     public static double ele_FloorPosition = 0;
-    public static double ele_TopPosition = 490000;
+    public static double ele_TopPosition = 300000;
     public static double ele_MidPosition = 200000;
+    public static double ele_LowerLimit = -2500;
+    public static double ele_UpperLimit = -430000;
+
 
     /**
      * Wrist Soft Stops
      */
     public static int wrist_In = 0;
-    public static int wrist_Out = 28000;
+    public static int wrist_Out = 20000;
 }

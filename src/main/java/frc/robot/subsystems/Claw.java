@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Claw extends SubsystemBase {
-  private WPI_TalonFX clawLead = new WPI_TalonFX(Constants.clawR);
-  private WPI_TalonFX clawFollow = new WPI_TalonFX(Constants.clawL);
+  private WPI_TalonFX clawLead = new WPI_TalonFX(Constants.clawL);
+ // private WPI_TalonFX clawFollow = new WPI_TalonFX(Constants.clawL);
   private DoubleSolenoid extension = new DoubleSolenoid(Constants.kCompressor, PneumaticsModuleType.CTREPCM, Constants.kExtendedSolenoid, Constants.kRetractedSolenoid);
 
   // if true, extend. If false, retract
@@ -24,7 +24,7 @@ public class Claw extends SubsystemBase {
 
   public Claw(int rightPort, int leftPort, double gearRatio, Boolean invertedLeft) {
     setLeadDefaults();
-    setFollowDefaults();
+    // setFollowDefaults();
   }
 
   @Override
@@ -34,10 +34,10 @@ public class Claw extends SubsystemBase {
 
     if(clawLead.getMotorOutputPercent() == 0) {
       clawLead.setNeutralMode(NeutralMode.Brake);
-      clawFollow.setNeutralMode(NeutralMode.Brake);
+      //clawFollow.setNeutralMode(NeutralMode.Brake);
     } else {
       clawLead.setNeutralMode(NeutralMode.Coast);
-      clawFollow.setNeutralMode(NeutralMode.Coast);
+      //clawFollow.setNeutralMode(NeutralMode.Coast);
     }
   }
 
@@ -49,12 +49,12 @@ public class Claw extends SubsystemBase {
     clawLead.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
   }
 
-  public void setFollowDefaults() {
-    clawFollow.setNeutralMode(NeutralMode.Coast);
-    clawFollow.configOpenloopRamp(0.25);
-    clawFollow.follow(clawLead);
-    clawFollow.setInverted(InvertType.OpposeMaster);
-  }
+  // public void setFollowDefaults() {
+  //   clawFollow.setNeutralMode(NeutralMode.Coast);
+  //   clawFollow.configOpenloopRamp(0.25);
+  //   clawFollow.follow(clawLead);
+  //   clawFollow.setInverted(InvertType.OpposeMaster);
+  // }
 
   public void setHorizElevatorExtend(boolean extend) {
     extendState = extend;

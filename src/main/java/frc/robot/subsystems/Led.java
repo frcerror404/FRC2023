@@ -86,7 +86,7 @@ public class Led extends SubsystemBase {
     }
 
     public void yellowPurpleLed() {
-        if (Timer.getFPGATimestamp() - tempTime > 2) {
+        if (Timer.getFPGATimestamp() - tempTime > 1) {
             decorationColor = !decorationColor;
             tempTime = Timer.getFPGATimestamp();
             timingStep = 0;

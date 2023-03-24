@@ -109,8 +109,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    //return m_chooser.getSelected();\
-    return drivebase.getPathCommand("Forward3").andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
+    return m_chooser.getSelected();
+    //return drivebase.getPathCommand("Forward3").andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
   }
 
   public void runLedManager() {
@@ -171,7 +171,7 @@ public class RobotContainer {
 
     // Manuel Claw
     P1_rightBumper.whileTrue(new setClawSpeed(claw, 0.5)).whileFalse(new setClawSpeed(claw, 0.15));
-    P1_leftBumper.whileTrue(new setClawSpeed(claw, -0.15)).whileFalse(new setClawSpeed(claw, 0.0));
+    P1_leftBumper.whileTrue(new setClawSpeed(claw, -0.7)).whileFalse(new setClawSpeed(claw, 0.0));
 
     // Manuel Elevator
     // P1_AButton
@@ -186,8 +186,8 @@ public class RobotContainer {
 
     P1_startButton.whileTrue(new ToggleElevatorExtension(claw));
 
-    P1_BButton.whileTrue(new SetWristSpeed(wrist, .40)).whileFalse(new SetWristSpeed(wrist, 0));
-    P1_XButton.whileTrue(new SetWristSpeed(wrist, -.25)).whileFalse(new SetWristSpeed(wrist, 0));
+    P1_BButton.whileTrue(new SetWristSpeed(wrist, .25)).whileFalse(new SetWristSpeed(wrist, 0));
+    P1_XButton.whileTrue(new SetWristSpeed(wrist, -1.0)).whileFalse(new SetWristSpeed(wrist, 0));
 
     P1_AButton.onTrue(new SetLEDColor(WantedColorState.PURPLE, m_led));
     P1_YButton.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));

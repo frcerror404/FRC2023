@@ -1,6 +1,7 @@
 package frc.robot.commands.Autonomous.Commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
@@ -16,6 +17,7 @@ public class BackwardsChargingStation extends CommandBase {
   private boolean forward = true;
   private boolean prevFlip = true;
   PIDController chargingStation;
+  private double waitStart = 0, waitEnd = .5;
 
   // Constructor
   public BackwardsChargingStation(Drivebase argDrivebase, Gyro gyro2) {
@@ -41,17 +43,18 @@ public class BackwardsChargingStation extends CommandBase {
     // Touch other side
     if(phase == 0) {
       System.out.print("Phase 0 " + drivebase.getRightDistance());
-      if (drivebase.getRightDistance() > -12) {
+      if (drivebase.getRightDistance() > -14.0) {
         drivebase.manualControl(speedLeft, speedRight, true, false);
       } else {
-        drivebase.manualControl(-.5, -.5, false, false);
+        drivebase.manualControl(-.1, -.1, false, false);
         phase = 1;
+        waitStart = Timer.getFPGATimestamp();
       }
     }
 
 
     // Balance
-    if(phase == 1) {
+    if(phase == 1 && (Timer.getFPGATimestamp() - waitStart > waitEnd)) {
       if(flipCount > 10) {
         drivebase.manualControl(0, 0, false, false);
         return;
@@ -77,7 +80,7 @@ public class BackwardsChargingStation extends CommandBase {
   }
 
   private boolean correctDistance() {
-    return drivebase.getRightDistance() > -5.75;
+    return drivebase.getRightDistance() > -7.25;
   }
 
   // Called once the command ends or is interrupted.

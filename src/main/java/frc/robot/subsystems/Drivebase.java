@@ -149,7 +149,7 @@ public class Drivebase extends SubsystemBase {
       new RamseteCommand(
         trajectorPath,
         this::getPose,
-        new RamseteController(),
+        new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
         new SimpleMotorFeedforward(Constants.ksVolts, Constants.kvVoltsSecondsPerMeter, Constants.kaVoltSecondsSquarePErMeter),
         kinematics,
         this::getWheelSpeeds,

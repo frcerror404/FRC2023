@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
     NetworkTable limelight;// Table for the limelight
@@ -229,6 +230,7 @@ public class Limelight extends SubsystemBase {
      * @param ID
      */
     public void setPipeline(int id) {
+        Constants.limelightPipeline = id;
         pipeline.setNumber(id);
     }
 

@@ -22,11 +22,12 @@ public class ThrowConeAndBalance extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new SequentialCommandGroup(
-            new SetWristSpeedForTime(wrist, .5, 0.35),
+            //new SetWristSpeedForTime(wrist, .5, 0.35),
             new setClawSpeed(claw, -1.0),
             new DelayCommand(.3),
-            new setClawSpeed(claw, 0.0),
-            new SetWristSpeedForTime(wrist, -.75, 3)),
+            new setClawSpeed(claw, 0.0)
+            //new SetWristSpeedForTime(wrist, -.75, 3))
+        ),
         new BackwardsChargingStation(drivebase, gyro));
   }
 }

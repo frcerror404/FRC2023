@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,14 +26,14 @@ public class Elevator extends SubsystemBase {
     public void setElevatorSpeed(double speed) {
 
 
-        if(getElevatorPosition() > 350000 && speed > 0) {
+        if(getElevatorPosition() < Constants.ele_UpperLimit *.7 && speed > 0) {
             speed *= .5;
         }
-        if(getElevatorPosition() < 50000 && speed < 0) {
+        if(getElevatorPosition() > Constants.ele_LowerLimit * .7 && speed < 0) {
             speed *= .5;
         }
 
-        elevatorLead.set(ControlMode.PercentOutput, speed);
+        elevatorLead.set(ControlMode.PercentOutput, -speed);
     }
 
     public void setElevatorRPM(double rpm) {
@@ -43,12 +44,12 @@ public class Elevator extends SubsystemBase {
     public void setLeadDefaults() {
         //elevatorLead.configFactoryDefault();
         elevatorLead.setNeutralMode(NeutralMode.Coast);
-        elevatorLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.currentElevatorLimit,
-                Constants.currentElevatorThreshold, Constants.currentThresholdTime));
+        //elevatorLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, Constants.currentElevatorLimit,
+        //        Constants.currentElevatorThreshold, Constants.currentThresholdTime));
         //elevatorLead.configOpenloopRamp(.75);
         elevatorLead.setInverted(false);
 
-        elevatorLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 5, 2, 0.5));
+        elevatorLead.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 25, 2, 0.5));
         elevatorConfig.slot0.kP = .002;
         elevatorConfig.slot0.kI = 0;
         elevatorConfig.slot0.kF = 0;
@@ -61,9 +62,9 @@ public class Elevator extends SubsystemBase {
         elevatorLead.configAllSettings(elevatorConfig);
 
         elevatorLead.configReverseSoftLimitEnable(true);
-        elevatorLead.configReverseSoftLimitThreshold(Constants.ele_LowerLimit);
+        elevatorLead.configReverseSoftLimitThreshold(Constants.ele_UpperLimit);
         elevatorLead.configForwardSoftLimitEnable(true);
-        elevatorLead.configForwardSoftLimitThreshold(Constants.ele_TopPosition);
+        elevatorLead.configForwardSoftLimitThreshold(Constants.ele_LowerLimit);
 
         elevatorFollow.follow(elevatorLead);
         elevatorFollow.setNeutralMode(NeutralMode.Coast);
