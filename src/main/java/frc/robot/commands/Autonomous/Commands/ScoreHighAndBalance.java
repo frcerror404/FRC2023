@@ -4,11 +4,8 @@
 
 package frc.robot.commands.Autonomous.Commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.SetElevatorSpeed_DefaultCommand;
-import frc.robot.commands.ToggleElevatorExtension;
 import frc.robot.commands.setClawSpeed;
 import frc.robot.commands.setElevatorSpeed;
 import frc.robot.subsystems.Claw;
