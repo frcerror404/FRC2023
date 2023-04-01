@@ -34,6 +34,7 @@ public final class Constants {
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(0.479);
     public static final int kExtendedSolenoid = 0;
     public static final int kRetractedSolenoid = 1;
+    public static final double WristPlayerStation = 15000;
    
 
     //Limelight
@@ -99,5 +100,5 @@ public final class Constants {
      * Wrist Soft Stops
      */
     public static int wrist_In = 0;
-    public static int wrist_Out = 20000;
+    public static int wrist_Out = 24000;
 }

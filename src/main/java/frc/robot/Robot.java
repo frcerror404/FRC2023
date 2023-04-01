@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.updatePigeon();
     m_robotContainer.getElevatorSensors();
     m_robotContainer.putDrivebaseSensors();
+    m_robotContainer.AddAutonomousSelectorToDashboard();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -100,6 +101,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   /** This function is called periodically during operator control. */

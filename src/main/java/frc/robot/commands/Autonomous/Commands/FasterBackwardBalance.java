@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
 
-public class BackwardsChargingStation extends CommandBase {
+public class FasterBackwardBalance extends CommandBase {
   public final Drivebase drivebase;
   public final Gyro gyro;
   public final double timeout = 60.0;
@@ -20,7 +20,7 @@ public class BackwardsChargingStation extends CommandBase {
   private double waitStart = 0, waitEnd = .5;
 
   // Constructor
-  public BackwardsChargingStation(Drivebase argDrivebase, Gyro gyro2) {
+  public FasterBackwardBalance(Drivebase argDrivebase, Gyro gyro2) {
     drivebase = argDrivebase;
     gyro = gyro2;
 
@@ -30,8 +30,8 @@ public class BackwardsChargingStation extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    speedLeft = .4;
-    speedRight = .4;
+    speedLeft = .6;
+    speedRight = .6;
 
     drivebase.zeroEncoders();
   }
@@ -43,6 +43,12 @@ public class BackwardsChargingStation extends CommandBase {
     // Touch other side
     if(phase == 0) {
       System.out.print("Phase 0 " + drivebase.getRightDistance());
+
+      if(drivebase.getRightDistance() < -6.0) {
+        speedLeft = .55;
+        speedRight = .55;
+      }
+
       if (drivebase.getRightDistance() > -14.0) {
         drivebase.manualControl(speedLeft, speedRight, true, false);
       } else {
@@ -56,6 +62,9 @@ public class BackwardsChargingStation extends CommandBase {
     // Balance
     if(phase == 1 && (Timer.getFPGATimestamp() - waitStart > waitEnd)) {
 
+      speedLeft = .47;
+      speedRight = .47;
+
       if(flipCount > 1) {
         speedLeft = .35;
         speedRight = .35;
@@ -68,6 +77,8 @@ public class BackwardsChargingStation extends CommandBase {
   
       if (correctDistance()) {
         drivebase.manualControl(speedLeft, speedRight, true, false);
+        speedLeft = .35;
+        speedRight = .35;
       } else {
         drivebase.manualControl(-speedLeft, -speedRight, true, false);
       }
@@ -86,7 +97,7 @@ public class BackwardsChargingStation extends CommandBase {
   }
 
   private boolean correctDistance() {
-    return drivebase.getRightDistance() > -7.28;
+    return drivebase.getRightDistance() > -7.48;
   }
 
   // Called once the command ends or is interrupted.

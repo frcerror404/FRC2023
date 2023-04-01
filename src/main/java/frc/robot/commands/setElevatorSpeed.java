@@ -13,12 +13,12 @@ import frc.robot.subsystems.Elevator;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class setElevatorPosition extends CommandBase {
-    private Double m_units;
+public class setElevatorSpeed extends CommandBase {
+    private Double m_speed;
     private Elevator m_elevator;
 
-  public setElevatorPosition(Elevator elevator, double units) {
-    m_units = units;
+  public setElevatorSpeed(Elevator elevator, double speed) {
+    m_speed = speed;
     m_elevator = elevator;
 
     addRequirements(elevator);
@@ -26,7 +26,7 @@ public class setElevatorPosition extends CommandBase {
 
   @Override
   public void execute() {
-    m_elevator.setElevatorPosition(m_units);
+    m_elevator.setElevatorSpeed(m_speed);
   }
 
   // Make this return true when this Command no longer needs to run execute()

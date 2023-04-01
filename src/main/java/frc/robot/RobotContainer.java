@@ -25,12 +25,16 @@ import frc.robot.commands.SetElevatorSpeed_DefaultCommand;
 import frc.robot.commands.SetWristSpeed;
 import frc.robot.commands.ToggleElevatorExtension;
 import frc.robot.commands.SetLEDColor;
+import frc.robot.commands.SetWristPosition;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Piston;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Led.WantedColorState;
 import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
-import frc.robot.commands.Autonomous.Commands.BackwardsChargingStation;
+import frc.robot.commands.Autonomous.Commands.ScoreHighAndBalance;
+import frc.robot.commands.Autonomous.Commands.FasterBackwardBalance;
+import frc.robot.commands.Autonomous.Commands.GyroBalance;
+import frc.robot.commands.Autonomous.Commands.QuickTurnXDegrees;
 import frc.robot.commands.Autonomous.Commands.ChargingStation;
 import frc.robot.commands.Autonomous.Commands.ThrowConeAndBalance;
 
@@ -77,14 +81,21 @@ public class RobotContainer {
     configureButtonBindings();
 
     m_chooser.addOption("Regular Balance Only", new ChargingStation(drivebase, gyro));
-    m_chooser.setDefaultOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, drivebase, gyro));
+    m_chooser.addOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, drivebase, gyro));
     m_chooser.addOption("Drive Forward Only", new DriveStraightOnly(drivebase, gyro));
-    m_chooser.addOption("Backwards Balance Only", new BackwardsChargingStation(drivebase, gyro));
+    m_chooser.addOption("Backwards Balance Only", new FasterBackwardBalance(drivebase, gyro));
+    m_chooser.addOption("Score High And Balance", new ScoreHighAndBalance(wrist, claw, elevator, m_drivebase, gyro));
+    m_chooser.addOption("Faster Balance", new FasterBackwardBalance(m_drivebase, gyro));
+    m_chooser.setDefaultOption("Gyro Balance", new GyroBalance(m_drivebase, gyro));
     //m_chooser.addOption("Elevator Middle", new setElevatorPosition(200000.0,
     //elevator));
     //m_chooser.addOption("Elevator Top", new setElevatorPosition(490000.0,
     //elevator));
 
+    AddAutonomousSelectorToDashboard();
+  }
+
+  public void AddAutonomousSelectorToDashboard() {
     SmartDashboard.putData(m_chooser);
   }
 
@@ -119,6 +130,10 @@ public class RobotContainer {
 
   public void runLed() {
     this.m_led.yellowPurpleLed();
+  }
+
+  public void setDTBrakes(boolean on) {
+    drivebase.SetBrakeMode(on);
   }
 
   /**
@@ -169,6 +184,8 @@ public class RobotContainer {
     // .whenPressed(new SetRelease(martianClimbers, ReleaseType.ShortArmRelease))
     // .whenReleased(new SetRelease(martianClimbers, ReleaseType.None));
 
+    P0_AButton.onTrue(new QuickTurnXDegrees(drivebase, gyro, 180, true));
+
     // Manuel Claw
     P1_rightBumper.whileTrue(new setClawSpeed(claw, 0.5)).whileFalse(new setClawSpeed(claw, 0.15));
     P1_leftBumper.whileTrue(new setClawSpeed(claw, -0.7)).whileFalse(new setClawSpeed(claw, 0.0));
@@ -186,8 +203,10 @@ public class RobotContainer {
 
     P1_startButton.whileTrue(new ToggleElevatorExtension(claw));
 
-    P1_BButton.whileTrue(new SetWristSpeed(wrist, .25)).whileFalse(new SetWristSpeed(wrist, 0));
+    P1_BButton.whileTrue(new SetWristSpeed(wrist, .25)).whileFalse(new SetWristSpeed(wrist, -1.0));
     P1_XButton.whileTrue(new SetWristSpeed(wrist, -1.0)).whileFalse(new SetWristSpeed(wrist, 0));
+
+    P1_YButton.whileTrue(new SetWristPosition(wrist)).whileFalse(new SetWristSpeed(wrist, 0));
 
     P1_AButton.onTrue(new SetLEDColor(WantedColorState.PURPLE, m_led));
     P1_YButton.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));

@@ -193,6 +193,14 @@ public class Drivebase extends SubsystemBase {
 
   public void manualControl(double rawAxis, double rawAxis2, boolean turbo, boolean slow) {
 
+    if(turbo) {
+      SetBrakeMode(false);
+    }
+    
+    if(slow) {
+      SetBrakeMode(true);
+    }
+
     if(!turbo && !slow) {
       rawAxis *= Constants.kDrivetrainSpeedMultiplier;
       rawAxis2 *= Constants.kDrivetrainSpeedMultiplier;
@@ -211,6 +219,10 @@ public class Drivebase extends SubsystemBase {
 
   }
 
+  public void rawControl(double leftSpeed, double rightSpeed) {
+    drivetrain.tankDrive(-leftSpeed, -rightSpeed);
+  }
+
   // Reset Motor Controllers and set Limits/Ramp Rate
   private void setLeftLeadDefaults() {
     LeftLead.configFactoryDefault();
@@ -218,6 +230,7 @@ public class Drivebase extends SubsystemBase {
     LeftLead.configOpenloopRamp(.25);
     LeftLead.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
     LeftLead.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+
   }
 
   private void setleftFollowDefaults() {

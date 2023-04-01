@@ -33,4 +33,12 @@ public class Wrist extends SubsystemBase {
         wristTalon.configReverseSoftLimitEnable(true);
     }
 
+    public void setWristPosition(double position) {
+        if(wristTalon.getSelectedSensorPosition() > position) {
+            wristTalon.set(TalonFXControlMode.PercentOutput, -1.0);
+        } else {
+            wristTalon.set(TalonFXControlMode.PercentOutput, .1);
+        }
+    }
+
 }
