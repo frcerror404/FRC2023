@@ -37,6 +37,7 @@ import frc.robot.commands.Autonomous.Commands.GyroBalance;
 import frc.robot.commands.Autonomous.Commands.QuickTurnXDegrees;
 import frc.robot.commands.Autonomous.Commands.ChargingStation;
 import frc.robot.commands.Autonomous.Commands.ThrowConeAndBalance;
+import frc.robot.commands.Autonomous.Modes.ScoreConeAndCube;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -86,11 +87,8 @@ public class RobotContainer {
     m_chooser.addOption("Backwards Balance Only", new FasterBackwardBalance(drivebase, gyro));
     m_chooser.addOption("Score High And Balance", new ScoreHighAndBalance(wrist, claw, elevator, m_drivebase, gyro));
     m_chooser.addOption("Faster Balance", new FasterBackwardBalance(m_drivebase, gyro));
-    m_chooser.setDefaultOption("Gyro Balance", new GyroBalance(m_drivebase, gyro));
-    //m_chooser.addOption("Elevator Middle", new setElevatorPosition(200000.0,
-    //elevator));
-    //m_chooser.addOption("Elevator Top", new setElevatorPosition(490000.0,
-    //elevator));
+    m_chooser.addOption("Gyro Balance", new GyroBalance(m_drivebase, gyro));
+    m_chooser.setDefaultOption("Score cone and cube", new ScoreConeAndCube(m_drivebase, elevator, claw, gyro, wrist));
 
     AddAutonomousSelectorToDashboard();
   }
@@ -179,21 +177,11 @@ public class RobotContainer {
     JoystickButton P1_startButton = new JoystickButton(joy1,
     XboxController.Button.kStart.value);
 
-    
-    // P0_LStick
-    // .whenPressed(new SetRelease(martianClimbers, ReleaseType.ShortArmRelease))
-    // .whenReleased(new SetRelease(martianClimbers, ReleaseType.None));
+    P0_AButton.onTrue(new QuickTurnXDegrees(drivebase, gyro, 180, true, 2.0));
 
-    P0_AButton.onTrue(new QuickTurnXDegrees(drivebase, gyro, 180, true));
-
-    // Manuel Claw
+    // Manual Claw
     P1_rightBumper.whileTrue(new setClawSpeed(claw, 0.5)).whileFalse(new setClawSpeed(claw, 0.15));
     P1_leftBumper.whileTrue(new setClawSpeed(claw, -0.7)).whileFalse(new setClawSpeed(claw, 0.0));
-
-    // Manuel Elevator
-    // P1_AButton
-    // .whileTrue(new setElevatorPosition(elevator, Constants.ele_MidPosition))
-    // .whileFalse(new setElevatorPosition(elevator, Constants.ele_FloorPosition));
 
     elevator.setDefaultCommand(
         new SetElevatorSpeed_DefaultCommand(

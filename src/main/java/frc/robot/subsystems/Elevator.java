@@ -27,10 +27,10 @@ public class Elevator extends SubsystemBase {
 
 
         if(getElevatorPosition() < Constants.ele_UpperLimit *.7 && speed > 0) {
-            speed *= .5;
+            speed *= .6;
         }
         if(getElevatorPosition() > Constants.ele_LowerLimit * .7 && speed < 0) {
-            speed *= .5;
+            speed *= .6;
         }
 
         elevatorLead.set(ControlMode.PercentOutput, -speed);

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
 
+@SuppressWarnings("unused")
 public class QuickTurnXDegrees extends CommandBase {
   private final Drivebase m_drivebase;
   private final Gyro m_gyro;
@@ -23,7 +24,7 @@ public class QuickTurnXDegrees extends CommandBase {
 
   private double k180DegreeEncoderDistance = 1000;
 
-  private double kP = .0065, kI = 0.000875, kD = 0.00005;
+  private double kP = .0045, kI = 0.00275, kD = 0.00005;
   private PIDController m_rotationPID = new PIDController(kP, kI, kD);
 
   private double kToleranceDegrees = 2, kToleranceDegPerSec = 2 ;
@@ -32,11 +33,12 @@ public class QuickTurnXDegrees extends CommandBase {
   private double m_startTime, m_timeout = 2;
 
   /** Creates a new Quick180. */
-  public QuickTurnXDegrees(Drivebase drivebase, Gyro gyro, double degrees, boolean clockwise) {
+  public QuickTurnXDegrees(Drivebase drivebase, Gyro gyro, double degrees, boolean clockwise, double timeout) {
     m_drivebase = drivebase;
     m_gyro = gyro;
     m_clockwise = clockwise;
     m_targetDegrees = degrees;
+    m_timeout = timeout;
 
     SmartDashboard.putNumber("Rotation_kP", kP);
     SmartDashboard.putNumber("Rotation_kI", kI);

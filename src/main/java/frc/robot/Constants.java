@@ -90,7 +90,7 @@ public final class Constants {
      */
 
     public static double ele_FloorPosition = 0;
-    public static double ele_TopPosition = 300000;
+    public static double ele_TopPosition = -430000;
     public static double ele_MidPosition = 200000;
     public static double ele_LowerLimit = -2500;
     public static double ele_UpperLimit = -430000;

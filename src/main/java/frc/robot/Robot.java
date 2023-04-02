@@ -57,10 +57,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    m_robotContainer.getLimelightValues();
-    m_robotContainer.getGyroValues();
+    //m_robotContainer.getLimelightValues();
+    //m_robotContainer.getGyroValues();
     m_robotContainer.updatePigeon();
-    m_robotContainer.getElevatorSensors();
+    //m_robotContainer.getElevatorSensors();
     m_robotContainer.putDrivebaseSensors();
     m_robotContainer.AddAutonomousSelectorToDashboard();
   }
