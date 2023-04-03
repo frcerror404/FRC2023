@@ -10,7 +10,6 @@ import frc.robot.Constants;
 import frc.robot.commands.SetWristSpeed;
 import frc.robot.commands.ToggleElevatorExtension;
 import frc.robot.commands.setClawSpeed;
-import frc.robot.commands.setElevatorSpeed;
 import frc.robot.commands.Autonomous.Commands.DelayCommand;
 import frc.robot.commands.Autonomous.Commands.DriveStraightXMeters;
 import frc.robot.commands.Autonomous.Commands.GyroBalance;

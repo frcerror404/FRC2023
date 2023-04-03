@@ -23,6 +23,7 @@ public class Robot extends TimedRobot {
   public final Drivebase drivebase = new Drivebase();
 
   private RobotContainer m_robotContainer;
+  @SuppressWarnings("unused")
   private SendableChooser<Command> chooser = new SendableChooser<>();
   /**
    * This function is run when the robot is first started up and should be used for any
