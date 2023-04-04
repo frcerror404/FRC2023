@@ -21,6 +21,8 @@ public class QuickTurnXDegrees extends CommandBase {
   private double m_rightEncoder_start = 0, m_leftEncoder_start = 0, m_gyroRotation_start = 0;
   private double m_yawGoal = 0;
 
+  private boolean m_isAbsolute = false;
+
 
   private double k180DegreeEncoderDistance = 1000;
 
@@ -31,6 +33,23 @@ public class QuickTurnXDegrees extends CommandBase {
 
   private double kBaseSpeed = 0.0;
   private double m_startTime, m_timeout = 2;
+
+  
+  public QuickTurnXDegrees(Drivebase drivebase, Gyro gyro, double degrees, boolean clockwise, double timeout, boolean absolute) {
+    m_isAbsolute = absolute;
+    m_drivebase = drivebase;
+    m_gyro = gyro;
+    m_clockwise = clockwise;
+    m_targetDegrees = degrees;
+    m_timeout = timeout;
+
+    SmartDashboard.putNumber("Rotation_kP", kP);
+    SmartDashboard.putNumber("Rotation_kI", kI);
+    SmartDashboard.putNumber("Rotation_kD", kD);
+
+    addRequirements(drivebase);
+  }
+
 
   /** Creates a new Quick180. */
   public QuickTurnXDegrees(Drivebase drivebase, Gyro gyro, double degrees, boolean clockwise, double timeout) {
@@ -47,6 +66,7 @@ public class QuickTurnXDegrees extends CommandBase {
     addRequirements(drivebase);
   }
 
+
   @Override
   public void initialize() {
     m_rightEncoder_start = m_drivebase.getRightDistance();
@@ -58,6 +78,10 @@ public class QuickTurnXDegrees extends CommandBase {
       m_yawGoal = m_gyroRotation_start - m_targetDegrees;
     } else {
       m_yawGoal = m_gyroRotation_start + m_targetDegrees;
+    }
+
+    if(m_isAbsolute) {
+      m_yawGoal = m_targetDegrees;
     }
 
     m_rotationPID.setIntegratorRange(-0.65, 0.65);

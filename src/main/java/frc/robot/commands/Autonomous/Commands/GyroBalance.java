@@ -69,6 +69,7 @@ public class GyroBalance extends CommandBase {
     }
 
     if(sequence == 2) {
+
       if(getAngle() > 4) {
         m_drivebase.rawControl(slowSpeed, slowSpeed);
       } else if(getAngle() < -4) {

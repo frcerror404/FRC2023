@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.io.Console;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -175,6 +179,8 @@ public class RobotContainer {
     XboxController.Button.kY.value);
     JoystickButton P1_startButton = new JoystickButton(joy1,
     XboxController.Button.kStart.value);
+    int P1_Pov = joy1.getPOV();
+    System.out.println(P1_Pov);
 
     P0_AButton.onTrue(new QuickTurnXDegrees(drivebase, gyro, 180, true, 2.0));
 
@@ -190,13 +196,17 @@ public class RobotContainer {
 
     P1_startButton.whileTrue(new ToggleElevatorExtension(claw));
 
-    P1_BButton.whileTrue(new SetWristSpeed(wrist, .25)).whileFalse(new SetWristSpeed(wrist, -1.0));
+    P1_BButton.whileTrue(new SetWristSpeed(wrist, .25)).whileFalse(new SetWristSpeed(wrist, (-.25 / 2)));
     P1_XButton.whileTrue(new SetWristSpeed(wrist, -1.0)).whileFalse(new SetWristSpeed(wrist, 0));
 
-    P1_YButton.whileTrue(new SetWristPosition(wrist)).whileFalse(new SetWristSpeed(wrist, 0));
+    P1_YButton.whileTrue(new SetWristPosition(wrist)).whileFalse(new SetWristSpeed(wrist, -.25));
 
     P1_AButton.onTrue(new SetLEDColor(WantedColorState.PURPLE, m_led));
-    P1_YButton.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));
+    //P1_YButton.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));
+
+    if (Constants.breakMode == NeutralMode.Brake) {
+      new SetLEDColor(WantedColorState.BREAKMODE, m_led);
+    }
 
     
     if (Constants.isCurvatureDrive) {

@@ -47,7 +47,7 @@ public class SetElevatorSpeed_DefaultCommand extends CommandBase {
     }
 
     if(right > 0.05 && left > 0.05) {
-      speed = 0;
+      speed = 0.05;
     }
 
     m_elevator.setElevatorSpeed(speed);

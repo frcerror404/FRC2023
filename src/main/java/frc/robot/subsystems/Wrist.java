@@ -27,10 +27,10 @@ public class Wrist extends SubsystemBase {
         wristTalon.configOpenloopRamp(.05);
         wristTalon.setInverted(false);
 
-        wristTalon.configForwardSoftLimitThreshold(Constants.wrist_Out);
         wristTalon.configReverseSoftLimitThreshold(Constants.wrist_In);
-        wristTalon.configForwardSoftLimitEnable(true);
         wristTalon.configReverseSoftLimitEnable(true);
+        wristTalon.configForwardSoftLimitThreshold(Constants.wrist_Out);
+        wristTalon.configForwardSoftLimitEnable(true);
     }
 
     public void setWristPosition(double position) {

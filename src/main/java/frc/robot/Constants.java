@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
@@ -12,6 +14,8 @@ public final class Constants {
     public static int klDT2 = 4;
     public static int krDT1 = 1;
     public static int krDT2 = 2;
+
+    public static NeutralMode breakMode = NeutralMode.Coast;
     //DriveTrain Speed
     public static double driveFastRPM = 1.0;
     public static double driveDefault = .7;

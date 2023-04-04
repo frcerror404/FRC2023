@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Led extends SubsystemBase {
-    private final AddressableLED m_led = new AddressableLED(9);
+    private final AddressableLED m_led = new AddressableLED(0);
     private int m_rainbowFirstPixelHue = 0;
     public int[] yellowRGB = { 255, 255, 0 };
     public int[] purpleRGB = { 255, 0, 255 };
     public int[] offRGB = { 0, 0, 0 };
     public int setColorCondition = Constants.setColorCondition;
     public String color;
-    private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(7);
+    private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(14);
 
     private double tempTime;
     private boolean decorationColor = false;
@@ -25,7 +25,8 @@ public class Led extends SubsystemBase {
         OFF,
         DECORATION,
         YELLOW,
-        PURPLE
+        PURPLE, 
+        BREAKMODE
     }
 
     private WantedColorState m_ColorState = WantedColorState.DECORATION;
@@ -55,6 +56,10 @@ public class Led extends SubsystemBase {
             }
             case DECORATION: {
                 yellowPurpleLed();
+                break;
+            }
+            case BREAKMODE: {
+                staticColor(Color.kRed);
                 break;
             }
             default: {
@@ -97,6 +102,18 @@ public class Led extends SubsystemBase {
         } else {
             staticColor(Color.kYellow);
         }
+    }
+
+    public void cubeLed() {
+        for (var i = 0; i < 1; i++) {
+            m_ledBuffer.setRGB(i, 0, 255, 0);
+        }
+        for (var i = 2; i < 4; i++) {
+            m_ledBuffer.setRGB(i, 255, 0, 255);
+        }
+        for (var i = 5; i < 8; i++) {
+            m_ledBuffer.setRGB(i, 0, 255, 0);
+        } 
     }
 
     public void staticColor(Color color) {

@@ -266,6 +266,7 @@ public class Drivebase extends SubsystemBase {
     LeftLead.setNeutralMode(mode);
     RightFollow.setNeutralMode(mode);
     LeftFollow.setNeutralMode(mode);
+    Constants.breakMode = mode;
   }
 
   public double convertEncoder(double value) {

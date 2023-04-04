@@ -57,7 +57,7 @@ public class ScoreConeAndCube extends SequentialCommandGroup {
 
       new ParallelCommandGroup(
         new setClawSpeed(claw, 0.0),
-        new SetElevatorHeight(elevator, Constants.ele_LowerLimit / 2, 1, false)
+        new SetElevatorHeight(elevator, Constants.ele_LowerLimit / 2, .5, false)
       ),
       
       new ParallelCommandGroup(
@@ -78,7 +78,7 @@ public class ScoreConeAndCube extends SequentialCommandGroup {
 
       new setClawSpeed(claw, .15),
       new SetWristSpeed(wrist, -1),
-      new QuickTurnXDegrees(drivebase, gyro, 180, true, .75),
+      new QuickTurnXDegrees(drivebase, gyro, -360, true, .75, true),
 
       new ParallelCommandGroup(
         new GyroBalance(drivebase, gyro),
@@ -86,8 +86,8 @@ public class ScoreConeAndCube extends SequentialCommandGroup {
           new SetElevatorHeight(elevator, -200000, 2, true),
           new ToggleElevatorExtension(claw),
           new ParallelCommandGroup(
-            new setClawSpeed(claw, -1.0),
-            new SetElevatorHeight(elevator, -200000, .6, true)
+            new setClawSpeed(claw, -.70),
+            new SetElevatorHeight(elevator, -250000, .6, true)
           ),
           
           new ToggleElevatorExtension(claw),
