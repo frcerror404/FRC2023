@@ -2,11 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Autonomous.Commands;
+package frc.robot.commands.Autonomous.Modes;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.setClawSpeed;
+import frc.robot.commands.Autonomous.Commands.DelayCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;

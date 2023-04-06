@@ -12,7 +12,6 @@ import frc.robot.commands.ToggleElevatorExtension;
 import frc.robot.commands.setClawSpeed;
 import frc.robot.commands.Autonomous.Commands.DelayCommand;
 import frc.robot.commands.Autonomous.Commands.DriveStraightXMeters;
-import frc.robot.commands.Autonomous.Commands.GyroBalance;
 import frc.robot.commands.Autonomous.Commands.QuickTurnXDegrees;
 import frc.robot.commands.Autonomous.Commands.SetElevatorHeight;
 import frc.robot.subsystems.Claw;

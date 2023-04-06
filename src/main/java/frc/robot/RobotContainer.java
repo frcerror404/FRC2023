@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Elevator;
@@ -33,14 +34,14 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Piston;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Led.WantedColorState;
-import frc.robot.commands.Autonomous.Commands.DriveStraightOnly;
-import frc.robot.commands.Autonomous.Commands.ScoreHighAndBalance;
-import frc.robot.commands.Autonomous.Commands.FasterBackwardBalance;
-import frc.robot.commands.Autonomous.Commands.GyroBalance;
 import frc.robot.commands.Autonomous.Commands.QuickTurnXDegrees;
-import frc.robot.commands.Autonomous.Commands.ChargingStation;
-import frc.robot.commands.Autonomous.Commands.ThrowConeAndBalance;
+import frc.robot.commands.Autonomous.Modes.ChargingStation;
+import frc.robot.commands.Autonomous.Modes.DriveStraightOnly;
+import frc.robot.commands.Autonomous.Modes.FasterBackwardBalance;
+import frc.robot.commands.Autonomous.Modes.GyroBalance;
 import frc.robot.commands.Autonomous.Modes.ScoreConeAndCube;
+import frc.robot.commands.Autonomous.Modes.ScoreHighAndBalance;
+import frc.robot.commands.Autonomous.Modes.ThrowConeAndBalance;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -179,8 +180,8 @@ public class RobotContainer {
     XboxController.Button.kY.value);
     JoystickButton P1_startButton = new JoystickButton(joy1,
     XboxController.Button.kStart.value);
-    int P1_Pov = joy1.getPOV();
-    System.out.println(P1_Pov);
+    POVButton P1_PovUp = new POVButton(joy1, 0);
+    POVButton P1_PovDown = new POVButton(joy1, 180);
 
     P0_AButton.onTrue(new QuickTurnXDegrees(drivebase, gyro, 180, true, 2.0));
 
@@ -201,7 +202,8 @@ public class RobotContainer {
 
     P1_YButton.whileTrue(new SetWristPosition(wrist)).whileFalse(new SetWristSpeed(wrist, -.25));
 
-    P1_AButton.onTrue(new SetLEDColor(WantedColorState.PURPLE, m_led));
+    P1_PovUp.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));
+    P1_PovDown.onTrue(new SetLEDColor(WantedColorState.PURPLE, m_led));
     //P1_YButton.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));
 
     if (Constants.breakMode == NeutralMode.Brake) {

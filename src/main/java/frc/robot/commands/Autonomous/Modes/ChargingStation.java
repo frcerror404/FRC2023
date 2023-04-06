@@ -1,12 +1,11 @@
-package frc.robot.commands.Autonomous.Commands;
+package frc.robot.commands.Autonomous.Modes;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
 
-public class BackwardsChargingStation extends CommandBase {
+public class ChargingStation extends CommandBase {
   public final Drivebase drivebase;
   public final Gyro gyro;
   public final double timeout = 60.0;
@@ -17,10 +16,9 @@ public class BackwardsChargingStation extends CommandBase {
   private boolean forward = true;
   private boolean prevFlip = true;
   PIDController chargingStation;
-  private double waitStart = 0, waitEnd = .5;
 
   // Constructor
-  public BackwardsChargingStation(Drivebase argDrivebase, Gyro gyro2) {
+  public ChargingStation(Drivebase argDrivebase, Gyro gyro2) {
     drivebase = argDrivebase;
     gyro = gyro2;
 
@@ -39,37 +37,35 @@ public class BackwardsChargingStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //if (leftOffset) {
+    //  speedLeft += 0.25;
+    //} else if (rightOffset) {
+    //  speedRight += 0.25;
+    //}
+
 
     // Touch other side
     if(phase == 0) {
-      System.out.print("Phase 0 " + drivebase.getRightDistance());
-      if (drivebase.getRightDistance() > -14.0) {
-        drivebase.manualControl(speedLeft, speedRight, true, false);
+      if (12 > drivebase.getRightDistance()) {
+        drivebase.manualControl(-speedLeft, -speedRight, true, false);
       } else {
-        drivebase.manualControl(-.1, -.1, false, false);
+        drivebase.manualControl(speedLeft, speedRight, false, false);
         phase = 1;
-        waitStart = Timer.getFPGATimestamp();
       }
     }
 
 
     // Balance
-    if(phase == 1 && (Timer.getFPGATimestamp() - waitStart > waitEnd)) {
-
-      if(flipCount > 1) {
-        speedLeft = .35;
-        speedRight = .35;
-      }
-
+    if(phase == 1) {
       if(flipCount > 10) {
         drivebase.manualControl(0, 0, false, false);
         return;
       }
   
       if (correctDistance()) {
-        drivebase.manualControl(speedLeft, speedRight, true, false);
-      } else {
         drivebase.manualControl(-speedLeft, -speedRight, true, false);
+      } else {
+        drivebase.manualControl(speedLeft, speedRight, true, false);
       }
   
       if(forward != prevFlip) {
@@ -86,7 +82,7 @@ public class BackwardsChargingStation extends CommandBase {
   }
 
   private boolean correctDistance() {
-    return drivebase.getRightDistance() > -7.28;
+    return 5.75 > drivebase.getRightDistance();
   }
 
   // Called once the command ends or is interrupted.
