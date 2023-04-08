@@ -16,7 +16,7 @@ import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Gyro;
 
 @SuppressWarnings("unused")
-public class GyroBalance extends CommandBase {
+public class GyroBalanceV2 extends CommandBase {
   private final Drivebase m_drivebase;
   private final Gyro m_gyro;
 
@@ -34,11 +34,11 @@ public class GyroBalance extends CommandBase {
   private double m_timeout = 10.0;
 
   private double topOfBalanceTime = 0;
-  private double MaxAngleDistance = 4.75, encoderStart = 0;
+  private double MaxAngleDistance = 4.550, encoderStart = 0;
   private boolean slowBalance = false;
   
   /** Creates a new GyroBalance. */
-  public GyroBalance(Drivebase drivebase, Gyro gyro) {
+  public GyroBalanceV2(Drivebase drivebase, Gyro gyro) {
     m_drivebase = drivebase;
     m_gyro = gyro;
     SmartDashboard.putNumber("MaxAngleDistance", MaxAngleDistance);
@@ -82,17 +82,20 @@ public class GyroBalance extends CommandBase {
 
       //if(maxYaw - getAngle() > flattenThreshold && flattenCount > 2) {
       if(maxYaw >= 12.0) {
-        m_drivebase.zeroEncoders();
-        encoderStart = m_drivebase.getRightDistance();
+        //m_drivebase.zeroEncoders();
+        encoderStart = m_drivebase.getRightDistanceV2();
         
         //MaxAngleDistance = SmartDashboard.getNumber("MaxAngleDistance", .8);
-        sequence = 3;
+        sequence = 3; // skip the gyro balance part
       }
     }
 
 
     if(sequence == 3) {
-      if(Math.abs(m_drivebase.getRightDistance()) - Math.abs(encoderStart) < MaxAngleDistance) {
+
+      SmartDashboard.putNumber("QB Encoder Start", encoderStart);
+      SmartDashboard.putNumber("QB DistanceToGo", m_drivebase.getRightDistanceV2() - encoderStart);
+      if(Math.abs(m_drivebase.getRightDistanceV2() - encoderStart) < MaxAngleDistance) {
         m_drivebase.rawControl(mediumSpeed, mediumSpeed);
         
       } else {

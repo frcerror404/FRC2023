@@ -20,6 +20,7 @@ public class Led extends SubsystemBase {
     private double tempTime;
     private boolean decorationColor = false;
     private int timingStep = 0;
+    private boolean brakeMode = false;
 
     public enum WantedColorState {
         OFF,
@@ -73,12 +74,17 @@ public class Led extends SubsystemBase {
         if (m_ColorState != state) {
             m_ColorState = state;
             timingStep = 0;
-
+            System.out.println("LED Changed State");
         }
     }
 
     public void setLedData(AddressableLEDBuffer buffer) {
         m_led.setData(buffer);
+    }
+
+    public void setBrakeMode(boolean isEnabled) {
+        brakeMode = isEnabled;
+        timingStep = 0;
     }
 
     public void rainbowLed() {
@@ -118,6 +124,11 @@ public class Led extends SubsystemBase {
 
     public void staticColor(Color color) {
         if (timingStep < m_ledBuffer.getLength()) {
+
+            if(timingStep % 2 == 0 && brakeMode) {
+                color = Color.kRed;
+            }
+
             m_ledBuffer.setLED(timingStep, color);
         } else {
             this.timingStep = -1;

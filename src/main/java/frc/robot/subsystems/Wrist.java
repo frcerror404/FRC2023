@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -16,6 +19,17 @@ public class Wrist extends SubsystemBase {
         setWristDefaults();
     }
 
+    @Override
+    public void periodic() {
+        double position = wristTalon.getSelectedSensorPosition();
+
+        SmartDashboard.putNumber("Wrist Position", position);
+
+        boolean limitReached = position > Constants.wrist_Out || position < Constants.wrist_In;
+        
+        SmartDashboard.putBoolean("Wrist Reached SW Limit", limitReached);
+    }
+
     public void setWristSpeed(double speed) {
         wristTalon.set(TalonFXControlMode.PercentOutput, speed);
     }
@@ -23,9 +37,11 @@ public class Wrist extends SubsystemBase {
     private void setWristDefaults() {
         wristTalon.configFactoryDefault();
         wristTalon.setNeutralMode(NeutralMode.Brake);
-        wristTalon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 15, 20, .25));
+        wristTalon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 25, 30, .25));
         wristTalon.configOpenloopRamp(.05);
         wristTalon.setInverted(false);
+        wristTalon.configForwardLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
+        wristTalon.configReverseLimitSwitchSource(LimitSwitchSource.Deactivated, LimitSwitchNormal.Disabled);
 
         wristTalon.configReverseSoftLimitThreshold(Constants.wrist_In);
         wristTalon.configReverseSoftLimitEnable(true);

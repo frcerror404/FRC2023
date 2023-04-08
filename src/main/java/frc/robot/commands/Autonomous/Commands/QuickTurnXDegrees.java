@@ -26,7 +26,7 @@ public class QuickTurnXDegrees extends CommandBase {
 
   private double k180DegreeEncoderDistance = 1000;
 
-  private double kP = .0045, kI = 0.00275, kD = 0.00005;
+  private double kP = .0045, kI = 0.0027, kD = 0.00005;
   private PIDController m_rotationPID = new PIDController(kP, kI, kD);
 
   private double kToleranceDegrees = 2, kToleranceDegPerSec = 2 ;

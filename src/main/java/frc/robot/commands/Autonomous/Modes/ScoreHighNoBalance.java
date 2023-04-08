@@ -18,9 +18,9 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Gyro;
 import frc.robot.subsystems.Wrist;
 
-public class ScoreHighAndBalance extends ParallelCommandGroup {
+public class ScoreHighNoBalance extends ParallelCommandGroup {
   /** Creates a new ScoreHighAndBalance. */
-  public ScoreHighAndBalance(Wrist wrist, Claw claw, Elevator elevator, Drivebase drivebase, Gyro gyro) {
+  public ScoreHighNoBalance(Wrist wrist, Claw claw, Elevator elevator, Drivebase drivebase, Gyro gyro) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     addCommands(
@@ -45,8 +45,7 @@ public class ScoreHighAndBalance extends ParallelCommandGroup {
 
         new DriveStraightXMeters(drivebase, -8.0, .7, 1),
         new DriveStraightXMeters(drivebase, -11.0, .5, 3),
-        new DelayCommand(1),
-        new GyroBalanceV2(drivebase, gyro)
+        new DelayCommand(1)
       )
     );
   }

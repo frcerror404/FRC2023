@@ -45,6 +45,11 @@ public class Drivebase extends SubsystemBase {
   private final DifferentialDriveOdometry m_Odometry;
   private Trajectory trajectorPath;
 
+  private Led m_ledSubsystem;
+  private boolean brakeModeEnabled = false;
+
+  private double rightEncoderOffset = 0;
+
   public DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(18.86));
 
   public Drivebase() {
@@ -64,7 +69,7 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void smartDashboardDrivetrainEncoders() {
-    SmartDashboard.putNumber("Drivetrain RightLead", convertEncoder(RightLead.getSelectedSensorPosition()));
+    SmartDashboard.putNumber("Drivetrain RightLead", getRightDistanceV2());
     SmartDashboard.putNumber("Drivetrain LeftLead", convertEncoder(LeftLead.getSelectedSensorPosition()));
   }
 
@@ -83,6 +88,8 @@ public class Drivebase extends SubsystemBase {
   public void zeroEncoders() {
     LeftLead.setSelectedSensorPosition(0);
     RightLead.setSelectedSensorPosition(0);
+
+    rightEncoderOffset = getRightDistance();
   }
 
   public double getLeftDistance() {
@@ -90,7 +97,11 @@ public class Drivebase extends SubsystemBase {
   }
 
   public double getRightDistance() {
-    return convertEncoder(getRightLeadSensor());
+    return convertEncoder(getRightLeadSensor());// - rightEncoderOffset; // Chad MSC
+  }
+
+  public double getRightDistanceV2() {
+    return -1 * convertEncoder(getRightLeadSensor());// - rightEncoderOffset; // Chad MSC
   }
 
   public double getLeftLeadSensor() {
@@ -99,6 +110,9 @@ public class Drivebase extends SubsystemBase {
 
   public double getRightLeadSensor() {
     return -1 * RightLead.getSelectedSensorPosition();
+  }
+  public double getRightLeadSensorV2() {
+    return RightLead.getSelectedSensorPosition();
   }
 
   public WPI_TalonFX getLeftLead() {
@@ -260,6 +274,13 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void SetBrakeMode(boolean on) {
+
+    if(brakeModeEnabled != on) {
+      m_ledSubsystem.setBrakeMode(on);
+    }
+
+    brakeModeEnabled = on;
+
     NeutralMode mode = on ? NeutralMode.Brake : NeutralMode.Coast;
 
     RightLead.setNeutralMode(mode);
@@ -279,5 +300,9 @@ public class Drivebase extends SubsystemBase {
   }
 
   public void setCoast(boolean b) {
+  }
+
+  public void setLEDReference(Led led) {
+    m_ledSubsystem = led;
   }
 }

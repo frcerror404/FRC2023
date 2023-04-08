@@ -38,9 +38,10 @@ import frc.robot.commands.Autonomous.Commands.QuickTurnXDegrees;
 import frc.robot.commands.Autonomous.Modes.ChargingStation;
 import frc.robot.commands.Autonomous.Modes.DriveStraightOnly;
 import frc.robot.commands.Autonomous.Modes.FasterBackwardBalance;
-import frc.robot.commands.Autonomous.Modes.GyroBalance;
+import frc.robot.commands.Autonomous.Modes.GyroBalanceV2;
 import frc.robot.commands.Autonomous.Modes.ScoreConeAndCube;
 import frc.robot.commands.Autonomous.Modes.ScoreHighAndBalance;
+import frc.robot.commands.Autonomous.Modes.ScoreHighNoBalance;
 import frc.robot.commands.Autonomous.Modes.ThrowConeAndBalance;
 
 /**
@@ -80,21 +81,26 @@ public class RobotContainer {
 
   public RobotContainer(Drivebase m_drivebase) {
     drivebase = m_drivebase;
+    m_drivebase.setLEDReference(m_led);
     // RightLead = drivebase.getRightLead();
     // LeftLead = drivebase.getLeftLead();
     // Configure the button bindings
     configureButtonBindings();
 
-    m_chooser.addOption("Regular Balance Only", new ChargingStation(drivebase, gyro));
-    m_chooser.addOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, drivebase, gyro));
+    //m_chooser.addOption("Regular Balance Only", new ChargingStation(drivebase, gyro));
+    //m_chooser.addOption("Throw Cone and Backwards Balance", new ThrowConeAndBalance(wrist, claw, drivebase, gyro));
     m_chooser.addOption("Drive Forward Only", new DriveStraightOnly(drivebase, gyro));
-    m_chooser.addOption("Backwards Balance Only", new FasterBackwardBalance(drivebase, gyro));
+    //m_chooser.addOption("Backwards Balance Only", new FasterBackwardBalance(drivebase, gyro));
     m_chooser.addOption("Score High And Balance", new ScoreHighAndBalance(wrist, claw, elevator, m_drivebase, gyro));
-    m_chooser.addOption("Faster Balance", new FasterBackwardBalance(m_drivebase, gyro));
-    m_chooser.addOption("Gyro Balance", new GyroBalance(m_drivebase, gyro));
+    //m_chooser.addOption("Faster Balance", new FasterBackwardBalance(m_drivebase, gyro));
+    m_chooser.addOption("Gyro Balance", new GyroBalanceV2(m_drivebase, gyro));
     m_chooser.setDefaultOption("Score cone and cube", new ScoreConeAndCube(m_drivebase, elevator, claw, gyro, wrist));
+    m_chooser.addOption("Score high without balancing", new ScoreHighNoBalance(wrist, claw, elevator, m_drivebase, gyro));
 
     AddAutonomousSelectorToDashboard();
+
+
+    SmartDashboard.putNumber("MaxAngleDistance", 0);
   }
 
   public void AddAutonomousSelectorToDashboard() {
@@ -122,7 +128,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    //return new ScoreHighAndBalance(wrist, claw, elevator, drivebase, gyro);//m_chooser.getSelected();
     return m_chooser.getSelected();
+    
     //return drivebase.getPathCommand("Forward3").andThen(new InstantCommand(() -> drivebase.SetBrakeMode(true)));
   }
 
@@ -182,6 +190,8 @@ public class RobotContainer {
     XboxController.Button.kStart.value);
     POVButton P1_PovUp = new POVButton(joy1, 0);
     POVButton P1_PovDown = new POVButton(joy1, 180);
+    POVButton P1_PovLeft = new POVButton(joy1, 90);
+    POVButton P1_PovRight = new POVButton(joy1, 270);
 
     P0_AButton.onTrue(new QuickTurnXDegrees(drivebase, gyro, 180, true, 2.0));
 
@@ -204,11 +214,13 @@ public class RobotContainer {
 
     P1_PovUp.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));
     P1_PovDown.onTrue(new SetLEDColor(WantedColorState.PURPLE, m_led));
+    P1_PovLeft.onTrue(new SetLEDColor(WantedColorState.DECORATION, m_led));
+    P1_PovRight.onTrue(new SetLEDColor(WantedColorState.DECORATION, m_led));
     //P1_YButton.onTrue(new SetLEDColor(WantedColorState.YELLOW, m_led));
 
-    if (Constants.breakMode == NeutralMode.Brake) {
-      new SetLEDColor(WantedColorState.BREAKMODE, m_led);
-    }
+    // if (Constants.breakMode == NeutralMode.Brake) {
+    //   new SetLEDColor(WantedColorState.BREAKMODE, m_led);
+    // }
 
     
     if (Constants.isCurvatureDrive) {

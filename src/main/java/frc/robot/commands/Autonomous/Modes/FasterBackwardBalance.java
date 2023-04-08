@@ -18,11 +18,13 @@ public class FasterBackwardBalance extends CommandBase {
   private boolean prevFlip = true;
   PIDController chargingStation;
   private double waitStart = 0, waitEnd = .5;
+  private boolean done = false;
 
   // Constructor
   public FasterBackwardBalance(Drivebase argDrivebase, Gyro gyro2) {
     drivebase = argDrivebase;
     gyro = gyro2;
+
 
     addRequirements(drivebase);
   }
@@ -49,15 +51,19 @@ public class FasterBackwardBalance extends CommandBase {
         speedRight = .55;
       }
 
-      if (drivebase.getRightDistance() > -14.0) {
+      if (drivebase.getRightDistance() > -15.0) {
         drivebase.manualControl(speedLeft, speedRight, true, false);
       } else {
         drivebase.manualControl(-.1, -.1, false, false);
         phase = 1;
         waitStart = Timer.getFPGATimestamp();
+        drivebase.rawControl(0.0,0.0);
+        //done = true;
       }
-    }
 
+      
+    }
+    
 
     // Balance
     if(phase == 1 && (Timer.getFPGATimestamp() - waitStart > waitEnd)) {
@@ -114,6 +120,6 @@ public class FasterBackwardBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return done;
   }
 }

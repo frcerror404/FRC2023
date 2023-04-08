@@ -36,37 +36,41 @@ public class ScoreConeAndCube extends SequentialCommandGroup {
     addCommands(
       // step 1
       new SetElevatorHeight(elevator, Constants.ele_UpperLimit, 1.55, false),
-
       // step 2
       new ParallelCommandGroup(
         new ToggleElevatorExtension(claw),
         new SetWristSpeed(wrist, .35),
         new SetElevatorHeight(elevator, Constants.ele_UpperLimit, .5, true) // holds position for .5 seconds
       ),
-
+      new setClawSpeed(claw, 0.7),
+      new DelayCommand(.875),
       new ToggleElevatorExtension(claw),
-      new setClawSpeed(claw, 1.0),
-      new DelayCommand(.45),
+      new DelayCommand(.25),
 
       // step 3 and 4 and some of 5
       new ParallelCommandGroup(
-        new SetWristSpeed(wrist, -1.0),
+        new SetWristSpeed(wrist, -.750),
         new DelayCommand(.5)
       ),
 
       new ParallelCommandGroup(
-        new setClawSpeed(claw, 0.0),
+        new setClawSpeed(claw, 1.0),
         new SetElevatorHeight(elevator, Constants.ele_LowerLimit / 2, .5, false)
       ),
       
       new ParallelCommandGroup(
+        new setClawSpeed(claw, 0.0),
         new SetElevatorHeight(elevator, Constants.ele_LowerLimit, 1, false),
-        new DriveStraightXMeters(drivebase, -8.0, .7, 3)
+        new SequentialCommandGroup(
+          new DriveStraightXMeters(drivebase, -3.0, .55, 3),
+          new DriveStraightXMeters(drivebase, -5.0, .7, 3)
+        )
+        
       ),
 
-      new DriveStraightXMeters(drivebase, -9.0, .5, 2),
+      new DriveStraightXMeters(drivebase, -10.5, .55, 2),
       new DelayCommand(.15),
-      new QuickTurnXDegrees(drivebase, gyro, 180, true, .75),
+      new QuickTurnXDegrees(drivebase, gyro, 180, true, 1.0),
       new DriveStraightXMeters(drivebase, 2, .7, 1),
       
       new ParallelCommandGroup(
@@ -77,22 +81,23 @@ public class ScoreConeAndCube extends SequentialCommandGroup {
 
       new setClawSpeed(claw, .15),
       new SetWristSpeed(wrist, -1),
-      new QuickTurnXDegrees(drivebase, gyro, -360, true, .75, true),
+      new QuickTurnXDegrees(drivebase, gyro, -360, true, 1.0, true),
 
-      new ParallelCommandGroup(
-        new GyroBalance(drivebase, gyro),
-        new SequentialCommandGroup(
-          new SetElevatorHeight(elevator, -200000, 2, true),
-          new ToggleElevatorExtension(claw),
-          new ParallelCommandGroup(
-            new setClawSpeed(claw, -.70),
-            new SetElevatorHeight(elevator, -250000, .6, true)
-          ),
+      new GyroBalanceV2(drivebase, gyro)
+      // new ParallelCommandGroup(
+      //   new GyroBalance(drivebase, gyro),
+      //   new SequentialCommandGroup(
+      //     new SetElevatorHeight(elevator, -200000, 2, true),
+      //     new ToggleElevatorExtension(claw),
+      //     new ParallelCommandGroup(
+      //       new setClawSpeed(claw, -.70),
+      //       new SetElevatorHeight(elevator, -250000, .6, true)
+      //     ),
           
-          new ToggleElevatorExtension(claw),
-          new setClawSpeed(claw, 0.0)
-        )
-      )
+      //     new ToggleElevatorExtension(claw),
+      //     new setClawSpeed(claw, 0.0)
+      //   )
+      // )
 
     );
   }
